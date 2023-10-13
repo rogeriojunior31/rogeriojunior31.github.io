@@ -1,0 +1,9 @@
+main:
+- title: "Bio"
+  url: "/#bio"
+
+- title: "Publications"
+  url: "/#publications"
+
+- title: "Resume"
+  url: "/#resume"

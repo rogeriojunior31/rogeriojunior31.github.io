@@ -1,0 +1,24 @@
+experiences:
+- place: "Samsung SDS"
+  time: "2022 - now"
+  title: "Tech Lead"
+  subtitle: ""
+  category: "work"
+
+- place: "Faculdade Impacta"
+  time: "2021 - now"
+  title: "IT Management"
+  subtitle: ""
+  category: "school"
+
+- place: "Linkapi Solutions"
+  time: "2021 - 2022"
+  title: "Back-End Engineer"
+  subtitle: ""
+  category: "work"
+
+- place: "Freelance Work"
+  time: "2017 - 2021"
+  title: "Freelancer"
+  subtitle: ""
+  category: "work"
