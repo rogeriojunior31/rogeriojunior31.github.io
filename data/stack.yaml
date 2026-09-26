@@ -1,0 +1,19 @@
+# Grupos da stack exibidos no currículo. label_en é opcional.
+- label: "Linguagens"
+  label_en: "Languages"
+  icon: "code"
+  items: ["TypeScript", "JavaScript", "Python", "Go", "Bash"]
+- label: "Back-end"
+  icon: "worktree"
+  items: ["Node.js", "Bun", "NestJS", "API design", "Microservices"]
+- label: "Cloud & DevOps"
+  icon: "cloud"
+  items: ["AWS", "Azure", "Docker", "GitHub Actions", "Elastic Stack"]
+- label: "IA & ML"
+  label_en: "AI & ML"
+  icon: "wand-magic-sparkles"
+  items: ["LangChain", "LlamaIndex", "PyTorch", "Keras", "LoRA fine-tuning", "LLM APIs"]
+- label: "Bancos de dados"
+  label_en: "Databases"
+  icon: "list"
+  items: ["PostgreSQL", "MySQL", "MongoDB", "Redis"]

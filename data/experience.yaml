@@ -1,0 +1,33 @@
+# category: work | school
+# Campos *_en são opcionais; se ausentes, o valor em PT é usado na versão em inglês.
+# title e subtitle são opcionais.
+- place: "CSU Digital"
+  time: "ago 2026 - atual"
+  time_en: "Aug 2026 - now"
+  title: "Software Engineer Specialist"
+  subtitle: "Ferramentas de IA, aplicações com LLM, back-end e DevOps."
+  subtitle_en: "AI tooling, LLM apps, back-end and DevOps."
+  category: "work"
+
+- place: "Kruzer"
+  time: "jan 2026 - ago 2026"
+  time_en: "Jan 2026 - Aug 2026"
+  title: "Tech Lead"
+  category: "work"
+
+- place: "Samsung SDS"
+  time: "2022 - dez 2025"
+  time_en: "2022 - Dec 2025"
+  title: "Tech Lead"
+  category: "work"
+
+- place: "Linkapi Solutions"
+  time: "2021 - 2022"
+  title: "Engenheiro Back-End"
+  title_en: "Back-End Engineer"
+  category: "work"
+
+- place: "Freelance"
+  time: "2017 - 2021"
+  title: "Freelancer"
+  category: "work"
