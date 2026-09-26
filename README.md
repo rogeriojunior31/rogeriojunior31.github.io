@@ -1,36 +1,40 @@
 # rogeriojunior31.github.io
 
-Site pessoal feito com [Hugo](https://gohugo.io) e o tema [Blowfish](https://blowfish.page) (importado como Hugo Module). Bilíngue: PT-BR (padrão) e EN (`/en/`).
+Personal site built with [Hugo](https://gohugo.io) and [Blowfish](https://blowfish.page), themed with [SP Night](https://sp-night.github.io) (Pico do Jaraguá). Available in Portuguese (default) and English (`/en/`).
 
-## Rodar localmente
-
-```sh
-mise install          # instala o hugo-extended fixado em mise.toml (requer Go para os módulos)
-hugo server -D        # http://localhost:1313
-```
-
-## Conteúdo
+## Run locally
 
 ```sh
-hugo new content posts/meu-post/index.pt-br.md
-hugo new content projects/meu-projeto/index.pt-br.md   # usa archetypes/projects.md
+mise install     # Hugo and Go, versions pinned in mise.toml
+hugo server -D   # http://localhost:1313
 ```
 
-Para a versão em inglês, crie o `index.en.md` ao lado. Coloque um `feature.jpg` na pasta do post/projeto para aparecer como capa.
-A página Sobre (`content/about/`) usa os shortcodes `fastfetch` e `units` (systemctl). As animações ficam em `layouts/partials/extend-footer.html`. O currículo vem de `data/experience.yaml` (experiência) e `data/stack.yaml` (stack).
-As cores são o SP Night, flavor **Pico do Jaraguá** (`assets/css/schemes/sp-night.css`), com os valores oficiais de `sp-night/palette/sp_night.json`; o realce de código segue `roles.json` (em `assets/css/custom.css`).
+## Content
 
-Atualizar o tema: `hugo mod get -u && hugo mod tidy`.
+| What | Where |
+|---|---|
+| Pages | `content/` (`index.pt-br.md` + `index.en.md`) |
+| Projects | `content/projects/<name>/` (`feature.png` becomes the card cover) |
+| Resume | `data/experience.yaml`, `data/stack.yaml` |
+| Menus | `config/_default/menus.*.toml` |
+
+New project: `hugo new content projects/<name>/index.pt-br.md`.
+Posts are hidden until the first one exists: add `posts` back to the menus.
+
+## Theme
+
+- Colors: `assets/css/schemes/sp-night.css`, taken from the official SP Night palette
+- Styles and syntax highlighting: `assets/css/custom.css`
+- Terminal shortcodes (`fastfetch`, `units`, `experience`, `stack`): `layouts/shortcodes/`
+- Animations and tmux bar: `layouts/partials/extend-footer.html`
+
+Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 
 ## CI/CD
 
-| Workflow | Quando | O que faz |
-|---|---|---|
-| `build.yml` | reutilizável | instala Hugo e Go pelo `mise.toml`, build com `--panicOnWarning` e checa links internos (lychee) |
-| `ci.yml` | todo PR | roda o build |
-| `deploy.yml` | push na `main` | roda o build e publica no GitHub Pages |
+- `ci.yml`: builds every pull request
+- `deploy.yml`: deploys to GitHub Pages on push to `main`
+- `build.yml`: shared build (`--panicOnWarning` plus an internal link check)
+- Dependabot keeps the actions and Blowfish up to date
 
-O Dependabot (`.github/dependabot.yml`) abre PRs semanais para as actions e para o tema Blowfish.
-As versões de Hugo e Go ficam só no `mise.toml`, usado localmente e no CI.
-
-No GitHub, em Settings → Pages, a Source deve ser **GitHub Actions**.
+Requires Settings → Pages → Source set to **GitHub Actions**.
