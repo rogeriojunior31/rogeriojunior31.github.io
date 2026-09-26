@@ -22,7 +22,15 @@ As cores são o SP Night, flavor **Pico do Jaraguá** (`assets/css/schemes/sp-ni
 
 Atualizar o tema: `hugo mod get -u && hugo mod tidy`.
 
-## Deploy
+## CI/CD
 
-Push na `main` → GitHub Actions (`.github/workflows/hugo.yml`) → GitHub Pages.
-Em Settings → Pages, a Source deve ser **GitHub Actions**.
+| Workflow | Quando | O que faz |
+|---|---|---|
+| `build.yml` | reutilizável | instala Hugo e Go pelo `mise.toml`, build com `--panicOnWarning` e checa links internos (lychee) |
+| `ci.yml` | todo PR | roda o build |
+| `deploy.yml` | push na `main` | roda o build e publica no GitHub Pages |
+
+O Dependabot (`.github/dependabot.yml`) abre PRs semanais para as actions e para o tema Blowfish.
+As versões de Hugo e Go ficam só no `mise.toml`, usado localmente e no CI.
+
+No GitHub, em Settings → Pages, a Source deve ser **GitHub Actions**.

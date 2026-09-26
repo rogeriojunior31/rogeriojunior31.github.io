@@ -1,2 +1,4 @@
+# Versões usadas localmente e no CI (jdx/mise-action). Hugo Modules precisa de Go.
 [tools]
-hugo-extended = "0.163"
+hugo-extended = "0.163.3"
+go = "1.27.1"
