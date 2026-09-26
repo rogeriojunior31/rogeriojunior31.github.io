@@ -1,2 +1,4 @@
-Gemfile
-Gemfile.lock
+public/
+resources/_gen/
+.hugo_build.lock
+.dog/

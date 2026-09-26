@@ -1,0 +1,25 @@
+locale = "pt-BR"
+label = "Português"
+weight = 1
+title = "Rogerio de Queiroz Junior"
+
+[params]
+  displayName = "PT"
+  isoCode = "pt-BR"
+  rtl = false
+  dateFormat = "2 Jan 2006"
+  description = "Site pessoal de Rogerio de Queiroz Junior: projetos, posts e currículo."
+
+[params.author]
+  name = "Rogerio de Queiroz Junior"
+  email = "rogerio.junior20@outlook.com"
+  image = "img/rogerio.jpg"
+  imageQuality = 96
+  headline = "Engenheiro de software · São Paulo"
+  bio = "Linux, open source, homelab, ferramentas de linha de comando e IA."
+  links = [
+    { email = "mailto:rogerio.junior20@outlook.com" },
+    { linkedin = "https://www.linkedin.com/in/rogerioqjunior/" },
+    { github = "https://github.com/rogeriojunior31" },
+    { kaggle = "https://www.kaggle.com/maskara31" },
+  ]
