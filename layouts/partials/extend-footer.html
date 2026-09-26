@@ -1,0 +1,59 @@
+<div class="tmux-bar" aria-hidden="true">
+  <span class="tmux-session">[0]</span>
+  <span class="tmux-win">rogerio@archlinux</span>
+  <span class="tmux-path" data-tmux-path>~</span>
+  <span class="tmux-clock" data-tmux-clock></span>
+</div>
+<script>
+(() => {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // Barra do tmux: caminho da página atual e relógio.
+  const path = document.querySelector("[data-tmux-path]");
+  if (path) path.textContent = "~" + decodeURIComponent(location.pathname).replace(/\/$/, "");
+  const clock = document.querySelector("[data-tmux-clock]");
+  const tick = () => { if (clock) clock.textContent = new Date().toLocaleString(document.documentElement.lang || "pt-BR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
+  tick(); setInterval(tick, 30000);
+
+  if (reduce) return;
+
+  // Digita o texto de um elemento, caractere por caractere.
+  const type = async (el, speed) => {
+    const text = el.textContent;
+    el.textContent = "";
+    el.classList.add("is-typing");
+    for (const ch of text) { el.textContent += ch; await sleep(speed + Math.random() * speed); }
+    el.classList.remove("is-typing");
+  };
+
+  // Terminais: comandos digitados, saídas impressas linha a linha, quando o terminal entra na tela.
+  const play = async (term) => {
+    const lines = [...term.querySelectorAll(".term-line")];
+    for (const line of lines) {
+      line.classList.remove("is-pending");
+      const text = line.querySelector(".term-text");
+      if (text) { await sleep(250); await type(text, 30); await sleep(200); }
+      else if (!line.classList.contains("term-idle")) await sleep(120);
+    }
+  };
+  const terms = document.querySelectorAll("[data-term]");
+  terms.forEach((t) => t.querySelectorAll(".term-line").forEach((l) => l.classList.add("is-pending")));
+  if ("IntersectionObserver" in window) {
+    const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { seen.unobserve(e.target); play(e.target); }
+    }), { threshold: 0.25 });
+    terms.forEach((t) => seen.observe(t));
+  } else terms.forEach(play);
+
+  // Títulos de página digitados (exceto páginas com terminal).
+  const h1 = document.querySelector("#main-content h1");
+  if (h1 && !document.querySelector("[data-term]") && h1.children.length === 0) type(h1, 22);
+
+  // Cards aparecem em sequência, como saída de comando.
+  document.querySelectorAll("#main-content .article-link--card").forEach((el, i) => {
+    el.style.setProperty("--d", Math.min(i, 8) * 80 + "ms");
+    el.classList.add("term-in");
+  });
+})();
+</script>

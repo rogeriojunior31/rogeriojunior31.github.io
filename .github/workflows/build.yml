@@ -1,0 +1,51 @@
+# Build reutilizável: usado pelo CI (PRs) e pelo Deploy (main).
+name: Build
+
+on:
+  workflow_call:
+    inputs:
+      deploy:
+        description: Configura o GitHub Pages e envia o site como artifact do Pages.
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_ENVIRONMENT: production
+      TZ: America/Sao_Paulo
+    steps:
+      - uses: actions/checkout@v7
+
+      # Instala hugo-extended e go nas versões do mise.toml.
+      - uses: jdx/mise-action@v4
+
+      - name: Cache Hugo modules
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/hugo_cache
+          key: hugo-${{ runner.os }}-${{ hashFiles('go.sum') }}
+          restore-keys: hugo-${{ runner.os }}-
+
+      - name: Configure Pages
+        id: pages
+        if: inputs.deploy
+        uses: actions/configure-pages@v6
+
+      - name: Build
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: hugo --gc --minify --panicOnWarning ${BASE_URL:+--baseURL "$BASE_URL/"}
+
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --root-dir "${{ github.workspace }}/public" "./public/**/*.html"
+          fail: true
+
+      - name: Upload Pages artifact
+        if: inputs.deploy
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./public

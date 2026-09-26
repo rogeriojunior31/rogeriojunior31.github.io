@@ -1,0 +1,60 @@
+/* SP Night · Pico do Jaraguá — gerado de ~/Projects/SP-Night/sp-night/palette/sp_night.json (flavor jaragua).
+   neutral: vão/laje/vidro/fiação + textos · primary: sódio · secondary: marginal. */
+:root {
+  --color-neutral: 231, 238, 233;
+  --color-neutral-50: 241, 245, 242;
+  --color-neutral-100: 231, 238, 233;
+  --color-neutral-200: 211, 218, 213;
+  --color-neutral-300: 172, 178, 174;
+  --color-neutral-400: 134, 139, 135;
+  --color-neutral-500: 112, 116, 113;
+  --color-neutral-600: 50, 55, 51;
+  --color-neutral-700: 32, 38, 34;
+  --color-neutral-800: 12, 16, 13;
+  --color-neutral-900: 5, 8, 6;
+  --color-primary-50: 253, 240, 228;
+  --color-primary-100: 251, 224, 201;
+  --color-primary-200: 255, 220, 156;
+  --color-primary-300: 246, 183, 128;
+  --color-primary-400: 244, 167, 101;
+  --color-primary-500: 242, 152, 74;
+  --color-primary-600: 206, 129, 63;
+  --color-primary-700: 169, 106, 52;
+  --color-primary-800: 133, 84, 41;
+  --color-primary-900: 97, 61, 30;
+  --color-secondary-50: 233, 239, 250;
+  --color-secondary-100: 212, 222, 245;
+  --color-secondary-200: 182, 200, 238;
+  --color-secondary-300: 154, 179, 232;
+  --color-secondary-400: 128, 165, 242;
+  --color-secondary-500: 110, 146, 222;
+  --color-secondary-600: 94, 124, 189;
+  --color-secondary-700: 77, 102, 155;
+  --color-secondary-800: 60, 80, 122;
+  --color-secondary-900: 44, 58, 89;
+
+  /* Paleta oficial completa, para uso direto em custom.css. */
+  --sp-vao: #050806;
+  --sp-laje: #0c100d;
+  --sp-concreto: #151a17;
+  --sp-vidro: #202622;
+  --sp-fiacao: #323733;
+  --sp-fg-vivo: #e7eee9;
+  --sp-fg: #d3dad5;
+  --sp-fg-dim: #868b87;
+  --sp-fg-muted: #707471;
+  --sp-brasa: #ea5d5d;
+  --sp-sodio: #f2984a;
+  --sp-taxi: #f5c66b;
+  --sp-ibira: #79d488;
+  --sp-estaiada: #05b89e;
+  --sp-sereno: #60bfb8;
+  --sp-marginal: #6e92de;
+  --sp-temporal: #b094e2;
+  --sp-brasa-vivo: #ff716f;
+  --sp-taxi-vivo: #ffdc9c;
+  --sp-ibira-vivo: #8ce99b;
+  --sp-sereno-vivo: #73d2cb;
+  --sp-marginal-vivo: #80a5f2;
+  --sp-temporal-vivo: #c3a7f6;
+}

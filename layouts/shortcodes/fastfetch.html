@@ -1,0 +1,21 @@
+{{- /*
+  Saída estilo fastfetch: logo do Arch (assets/ascii/arch.txt) + linhas "Chave: valor" do conteúdo.
+  Parâmetro opcional: title.
+*/ -}}
+{{- $logo := strings.TrimRight "\n" (resources.Get "ascii/arch.txt").Content -}}
+{{- $rows := "" -}}
+{{- range split (trim .Inner "\n") "\n" -}}
+  {{- $l := trim . " \r\t" -}}
+  {{- with $l -}}
+    {{- $kv := split . ": " -}}
+    {{- $k := index $kv 0 -}}
+    {{- $v := delimit (after 1 $kv) ": " -}}
+    {{- $rows = printf `%s<div><span class="ff-key">%s</span>: %s</div>` $rows ($k | htmlEscape) ($v | markdownify) -}}
+  {{- end -}}
+{{- end -}}
+{{- $swatches := "" -}}
+{{- range slice "vao" "brasa" "ibira" "taxi" "marginal" "temporal" "sereno" "fg" -}}
+  {{- $swatches = printf `%s<i style="background:var(--sp-%s)"></i>` $swatches . -}}
+{{- end -}}
+{{- $body := printf `%s<div class="term-line term-out"><div class="ff"><pre class="ff-logo" aria-hidden="true">%s</pre><div class="ff-info"><div class="ff-title"><span>rogerio</span>@<span>archlinux</span></div><div class="ff-sep">-----------------</div>%s<div class="ff-swatches">%s</div></div></div></div>` (partial "term-cmd.html" "fastfetch") ($logo | htmlEscape) $rows $swatches -}}
+{{ partial "term-window.html" (dict "title" (.Get "title" | default "rogerio@archlinux: ~") "body" $body) }}

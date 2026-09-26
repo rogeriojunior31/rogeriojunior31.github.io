@@ -1,0 +1,2 @@
+{{- /* Moldura de janela de terminal. Recebe dict: title (string), body (HTML já montado), class (opcional). */ -}}
+<div class="term {{ .class }}" data-term><div class="term-bar"><span class="term-dots"><i></i><i></i><i></i></span><span class="term-title">{{ .title | default "rogerio@archlinux: ~" }}</span></div><div class="term-body">{{ .body | safeHTML }}<div class="term-line term-cmd term-idle"><span class="term-prompt">❯</span> <span class="term-caret"></span></div></div></div>

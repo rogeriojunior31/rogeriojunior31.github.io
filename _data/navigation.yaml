@@ -1,9 +1,0 @@
-main:
-- title: "Bio"
-  url: "/#bio"
-
-- title: "Projects"
-  url: "/#projects"
-
-- title: "Resume"
-  url: "/#resume"

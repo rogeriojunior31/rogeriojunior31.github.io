@@ -1,0 +1,17 @@
+{{- /*
+  Experiência (data/experience.yaml) como tabela dentro de um terminal, saída de `column -t`.
+  A primeira entrada é marcada como atual. Campos *_en e url são opcionais.
+*/ -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $h := cond $en (slice "COMPANY" "ROLE" "PERIOD") (slice "EMPRESA" "CARGO" "PERÍODO") -}}
+{{- $rows := printf `<div class="cv-head"><span>%s</span><span>%s</span><span>%s</span></div>` (index $h 0) (index $h 1) (index $h 2) -}}
+{{- range $i, $e := hugo.Data.experience -}}
+  {{- $title := cond (and $en $e.title_en) $e.title_en ($e.title | default "") -}}
+  {{- $time := cond (and $en $e.time_en) $e.time_en $e.time -}}
+  {{- $place := $e.place | htmlEscape -}}
+  {{- with $e.url }}{{ $place = printf `<a href="%s" target="_blank" rel="noopener">%s</a>` . $place }}{{ end -}}
+  {{- $rows = printf `%s<div class="cv-row%s"><span class="cv-place"><b>●</b> %s</span><span class="cv-role">%s</span><span class="cv-time">%s</span></div>` $rows (cond (eq $i 0) " cv-now" "") $place $title $time -}}
+{{- end -}}
+{{- $cmd := cond $en "cat ~/cv/experience.tsv | column -t" "cat ~/cv/experiencia.tsv | column -t" -}}
+{{- $body := printf `%s<div class="term-line term-out"><div class="cv">%s</div></div>` (partial "term-cmd.html" $cmd) $rows -}}
+{{ partial "term-window.html" (dict "title" "rogerio@archlinux: ~/cv" "body" $body) }}
