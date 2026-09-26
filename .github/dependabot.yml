@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Actions dos workflows, agrupadas num PR só.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Tema Blowfish (Hugo Module). Aparece como indirect no go.mod, por isso "all".
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    allow:
+      - dependency-type: all
