@@ -17,7 +17,7 @@ hugo new content projects/meu-projeto/index.pt-br.md   # usa archetypes/projects
 ```
 
 Para a versão em inglês, crie o `index.en.md` ao lado. Coloque um `feature.jpg` na pasta do post/projeto para aparecer como capa.
-O terminal da home é o shortcode `terminal` (em `content/_index.*.md`); os links do `ls` ficam em `data/links.yaml`. A página Sobre (`content/about/`) usa os shortcodes `fastfetch` e `units` (systemctl). As animações ficam em `layouts/partials/extend-footer.html`. O currículo vem de `data/experience.yaml` (experiência) e `data/stack.yaml` (stack).
+A página Sobre (`content/about/`) usa os shortcodes `fastfetch` e `units` (systemctl). As animações ficam em `layouts/partials/extend-footer.html`. O currículo vem de `data/experience.yaml` (experiência) e `data/stack.yaml` (stack).
 As cores são o SP Night, flavor **Pico do Jaraguá** (`assets/css/schemes/sp-night.css`), com os valores oficiais de `sp-night/palette/sp_night.json`; o realce de código segue `roles.json` (em `assets/css/custom.css`).
 
 Atualizar o tema: `hugo mod get -u && hugo mod tidy`.

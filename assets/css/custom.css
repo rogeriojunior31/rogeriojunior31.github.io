@@ -3,10 +3,7 @@
 h1, h2, h3, h4, code, pre, kbd, header nav { font-family: var(--font-mono); }
 h1 { letter-spacing: -0.02em; }
 
-/* Na home os links ficam no terminal; esconde a linha de ícones do perfil. */
-article > header > div.mt-1.text-2xl { display: none; }
-
-/* ---------- Terminal da home (shortcode terminal) ---------- */
+/* ---------- Janela de terminal (partials/term-window.html) ---------- */
 .term {
   margin: 1.5rem auto 0; max-width: 42rem; text-align: left; overflow: hidden;
   border: 1px solid var(--sp-fiacao); border-radius: .6rem;
@@ -27,11 +24,6 @@ article > header > div.mt-1.text-2xl { display: none; }
 .term-prompt { color: var(--sp-sodio); font-weight: 700; }
 .term-out { color: var(--sp-fg-dim); }
 .term-out a { color: var(--sp-marginal); }
-.term-ls { display: inline-block; margin-right: 1.2rem; text-decoration: none !important; font-weight: 600; border-radius: .2rem; padding: 0 .15rem; margin-left: -.15rem; }
-.term-ls-dev { color: var(--sp-marginal) !important; }
-.term-ls-games { color: var(--sp-ibira) !important; }
-.term-ls:hover { color: var(--sp-vao) !important; background: var(--sp-sodio); }
-.term-ls.term-pop { animation: term-pop .25s ease-out both; }
 @keyframes term-pop { from { opacity: 0; transform: translateY(6px); } }
 
 /* Terminais dentro de páginas de conteúdo (Sobre): largura total, mesmas margens do texto. */
