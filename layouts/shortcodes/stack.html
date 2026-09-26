@@ -1,0 +1,17 @@
+{{- /* Stack (data/stack.yaml) como saída de `eza --tree ~/stack`. */ -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $groups := hugo.Data.stack -}}
+{{- $n := len $groups -}}
+{{- $tree := `<div class="tree-root">~/stack</div>` -}}
+{{- $files := 0 -}}
+{{- range $i, $g := $groups -}}
+  {{- $last := eq (add $i 1) $n -}}
+  {{- $label := cond (and $en $g.label_en) $g.label_en $g.label | lower | replaceRE `\s*&\s*` "-" | replaceRE `\s+` "-" -}}
+  {{- $files = add $files (len $g.items) -}}
+  {{- $items := slice -}}
+  {{- range $g.items }}{{ $items = $items | append (lower . | replaceRE `\s+` "-") }}{{ end -}}
+  {{- $tree = printf `%s<div><span class="tree-g">%s</span><span class="tree-dir">%s</span></div><div><span class="tree-g">%s</span><span class="tree-file">%s</span></div>` $tree (cond $last "└── " "├── ") $label (cond $last "    └── " "│   └── ") (delimit $items "  ") -}}
+{{- end -}}
+{{- $tree = printf `%s<div class="tree-sum">%d directories, %d files</div>` $tree $n $files -}}
+{{- $body := printf `%s<div class="term-line term-out"><div class="tree">%s</div></div>` (partial "term-cmd.html" "eza --tree ~/stack") $tree -}}
+{{ partial "term-window.html" (dict "title" "rogerio@archlinux: ~" "body" $body) }}

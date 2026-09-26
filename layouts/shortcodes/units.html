@@ -1,0 +1,17 @@
+{{- /*
+  Saída estilo `systemctl --user list-units`. Cada linha do conteúdo: "unidade | sub | descrição"
+  (sub: running, waiting... — define a cor do ponto).
+*/ -}}
+{{- $rows := `<div class="units-head"><span>UNIT</span><span>ACTIVE</span><span>SUB</span><span>DESCRIPTION</span></div>` -}}
+{{- range split (trim .Inner "\n") "\n" -}}
+  {{- $l := trim . " \r\t" -}}
+  {{- with $l -}}
+    {{- $c := split . "|" -}}
+    {{- $unit := trim (index $c 0) " " -}}
+    {{- $sub := trim (index $c 1) " " -}}
+    {{- $desc := trim (index $c 2) " " -}}
+    {{- $rows = printf `%s<div class="units-row units-%s"><span><b>●</b> %s</span><span>active</span><span>%s</span><span>%s</span></div>` $rows $sub $unit $sub ($desc | markdownify) -}}
+  {{- end -}}
+{{- end -}}
+{{- $body := printf `%s<div class="term-line term-out"><div class="units">%s</div></div>` (partial "term-cmd.html" "systemctl --user list-units") $rows -}}
+{{ partial "term-window.html" (dict "title" (.Get "title" | default "rogerio@archlinux: ~") "body" $body) }}

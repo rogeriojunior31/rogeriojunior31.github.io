@@ -1,0 +1,151 @@
+/* Títulos, código e navegação em JetBrains Mono, como no terminal. */
+:root { --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+h1, h2, h3, h4, code, pre, kbd, header nav { font-family: var(--font-mono); }
+h1 { letter-spacing: -0.02em; }
+
+/* Na home os links ficam no terminal; esconde a linha de ícones do perfil. */
+article > header > div.mt-1.text-2xl { display: none; }
+
+/* ---------- Terminal da home (shortcode terminal) ---------- */
+.term {
+  margin: 1.5rem auto 0; max-width: 42rem; text-align: left; overflow: hidden;
+  border: 1px solid var(--sp-fiacao); border-radius: .6rem;
+  background: var(--sp-vao); color: var(--sp-fg);
+  font-family: var(--font-mono); font-size: .9rem; line-height: 1.7;
+  box-shadow: 0 20px 50px -20px rgb(0 0 0 / .6), 0 0 40px -10px rgb(var(--color-primary-500) / .12);
+}
+.term-bar { display: flex; align-items: center; gap: .75rem; padding: .5rem .8rem; background: var(--sp-concreto); border-bottom: 1px solid var(--sp-fiacao); }
+.term-dots { display: flex; gap: .4rem; }
+.term-dots i { width: .7rem; height: .7rem; border-radius: 50%; background: var(--sp-brasa); }
+.term-dots i:nth-child(2) { background: var(--sp-taxi); }
+.term-dots i:nth-child(3) { background: var(--sp-ibira); }
+.term-title { flex: 1; text-align: center; margin-right: 2.5rem; font-size: .75rem; color: var(--sp-fg-dim); }
+.term-body { padding: 1rem 1.2rem 1.2rem; }
+.term-line { min-height: 1.7em; }
+.term-cmd { color: var(--sp-fg-vivo); }
+.term-cmd + .term-cmd, .term-out + .term-cmd { margin-top: .35rem; }
+.term-prompt { color: var(--sp-sodio); font-weight: 700; }
+.term-out { color: var(--sp-fg-dim); }
+.term-out a { color: var(--sp-marginal); }
+.term-ls { display: inline-block; margin-right: 1.2rem; text-decoration: none !important; font-weight: 600; border-radius: .2rem; padding: 0 .15rem; margin-left: -.15rem; }
+.term-ls-dev { color: var(--sp-marginal) !important; }
+.term-ls-games { color: var(--sp-ibira) !important; }
+.term-ls:hover { color: var(--sp-vao) !important; background: var(--sp-sodio); }
+.term-ls.term-pop { animation: term-pop .25s ease-out both; }
+@keyframes term-pop { from { opacity: 0; transform: translateY(6px); } }
+
+/* Terminais dentro de páginas de conteúdo (Sobre): largura total, mesmas margens do texto. */
+.prose .term { max-width: none; width: min(54rem, calc(100vw - 2rem)); margin: 1.5rem 0 2rem; }
+.prose .term .term-line { margin: 0; }
+.prose .term pre { margin: 0; padding: 0; background: none; border-radius: 0; }
+
+/* fastfetch */
+.ff { display: flex; gap: 2rem; align-items: flex-start; padding-top: .25rem; }
+.ff-logo { flex: none; color: var(--sp-marginal); font-family: var(--font-mono); font-size: .62rem; line-height: 1.25; font-weight: 700; }
+.ff-info { color: var(--sp-fg); font-size: .85rem; line-height: 1.65; min-width: 0; }
+.ff-info a { color: var(--sp-fg) !important; text-decoration-color: var(--sp-marginal); }
+.ff-title span { color: var(--sp-sodio); font-weight: 700; }
+.ff-sep { color: var(--sp-fg-muted); }
+.ff-key { color: var(--sp-marginal); font-weight: 700; }
+.ff-swatches { display: flex; gap: 0; margin: .6rem 0 0; padding: 0; }
+.ff-swatches i { margin: 0; }
+.ff-swatches i { width: 1.6rem; height: 1rem; }
+@media (max-width: 639px) { .ff-logo { display: none; } }
+
+/* systemctl --user list-units */
+.units { font-size: .8rem; overflow-x: auto; }
+.units-head, .units-row { display: grid; grid-template-columns: minmax(12rem, 1.3fr) 4.5rem 4.5rem 2fr; gap: .75rem; white-space: nowrap; }
+.units-head { color: var(--sp-fg-muted); font-weight: 700; }
+.units-row { color: var(--sp-fg); }
+.units-row b { color: var(--sp-ibira); }
+.units-row span:nth-child(2) { color: var(--sp-ibira); }
+.units-row span:nth-child(3) { color: var(--sp-fg-dim); }
+.units-waiting b, .units-waiting span:nth-child(3) { color: var(--sp-taxi); }
+.units-row span:last-child { color: var(--sp-fg-dim); white-space: normal; }
+@media (max-width: 639px) {
+  .units-head { display: none; }
+  .units-row { grid-template-columns: 1fr; gap: 0; margin-bottom: .5rem; }
+  .units-row span:nth-child(2), .units-row span:nth-child(3) { display: none; }
+  .units-row span:last-child { padding-left: 1.2rem; }
+}
+
+/* Currículo: experiência em tabela (column -t) */
+.cv { font-size: .85rem; overflow-x: auto; }
+.cv-head, .cv-row { display: grid; grid-template-columns: minmax(13rem, 1.2fr) minmax(14rem, 1.3fr) 11rem; gap: 1rem; white-space: nowrap; }
+.cv-head { color: var(--sp-fg-muted); font-weight: 700; margin-bottom: .2rem; }
+.cv-row { padding: .15rem 0; }
+.cv-row b { color: var(--sp-fiacao); }
+.cv-now b { color: var(--sp-ibira); }
+.cv-place { color: var(--sp-sodio); font-weight: 700; }
+.cv-place a { color: inherit !important; }
+.cv-role { color: var(--sp-fg); }
+.cv-time { color: var(--sp-taxi); }
+@media (max-width: 639px) {
+  .cv-head { display: none; }
+  .cv-row { grid-template-columns: 1fr; gap: 0; margin-bottom: .6rem; white-space: normal; }
+  .cv-role, .cv-time { padding-left: 1.2rem; }
+}
+
+/* Currículo: stack em eza --tree */
+.tree { font-size: .85rem; line-height: 1.6; overflow-x: auto; }
+.tree-root, .tree-dir { color: var(--sp-marginal); font-weight: 700; }
+.tree-g { color: var(--sp-fg-muted); white-space: pre; }
+.tree-file { color: var(--sp-fg); white-space: pre; }
+.tree-sum { margin-top: .5rem; color: var(--sp-fg-dim); }
+.tree > div { white-space: nowrap; }
+@media (max-width: 639px) { .tree { font-size: .75rem; } }
+
+/* Cursor em bloco piscando. */
+.term-caret { display: inline-block; width: .6em; height: 1.1em; vertical-align: text-bottom; background: var(--sp-sodio); animation: blink 1s steps(1) infinite; }
+.is-typing::after { content: ""; display: inline-block; width: .55em; height: 1em; margin-left: .1em; vertical-align: text-bottom; background: var(--sp-sodio); }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* Cards entram em sequência. */
+.term-in { animation: term-pop .4s ease-out var(--d, 0ms) both; }
+/* Linhas do terminal ainda não "impressas" ocupam espaço, sem empurrar a página. */
+.term-line.is-pending { visibility: hidden; }
+
+/* ---------- Barra de status estilo tmux ---------- */
+.tmux-bar {
+  display: flex; gap: .75rem; align-items: center; margin-top: 1.5rem; padding: .25rem .6rem;
+  font-family: var(--font-mono); font-size: .75rem; border-radius: .3rem;
+  background: var(--sp-concreto); color: var(--sp-fg-dim); border: 1px solid var(--sp-fiacao);
+}
+.tmux-session { color: var(--sp-vao); background: var(--sp-sodio); padding: 0 .4rem; border-radius: .2rem; font-weight: 700; }
+.tmux-win { color: var(--sp-ibira); }
+.tmux-path { color: var(--sp-fg); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tmux-clock { color: var(--sp-fg-dim); white-space: nowrap; }
+.tmux-bar { overflow: hidden; }
+@media (max-width: 639px) { .tmux-win { display: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .term-caret { animation: none; }
+}
+
+/* Seleção de texto e links no tom da paleta. */
+::selection { background: var(--sp-vidro); color: var(--sp-fg-vivo); }
+
+/* Realce de código: roles.json → syntax (SP Night). */
+.chroma { color: var(--sp-fg); background-color: var(--sp-vao); }
+.chroma .err { color: var(--sp-brasa); }
+.chroma .gd { color: var(--sp-brasa); }
+.chroma .gi { color: var(--sp-ibira); }
+.chroma .hl { background-color: var(--sp-vidro); }
+.chroma .ln, .chroma .lnt { color: var(--sp-fg-muted); }
+.chroma .k, .chroma .kd, .chroma .kn, .chroma .kp, .chroma .kr { color: var(--sp-marginal); }
+.chroma .kt, .chroma .nc { color: var(--sp-temporal); }
+.chroma .nn { color: var(--sp-temporal); }
+.chroma .nf, .chroma .fm { color: var(--sp-sereno); }
+.chroma .o, .chroma .ow { color: var(--sp-sereno); }
+.chroma .kc, .chroma .no { color: var(--sp-sodio); }
+.chroma .m, .chroma .mb, .chroma .mf, .chroma .mh, .chroma .mi, .chroma .il, .chroma .mo { color: var(--sp-sodio); }
+.chroma .nb, .chroma .bp { color: var(--sp-taxi); }
+.chroma .na { color: var(--sp-taxi); }
+.chroma .s, .chroma .sa, .chroma .sb, .chroma .sc, .chroma .dl, .chroma .sd, .chroma .s2, .chroma .sh, .chroma .si, .chroma .sx, .chroma .sr, .chroma .s1, .chroma .ss { color: var(--sp-ibira); }
+.chroma .se { color: var(--sp-estaiada); }
+.chroma .nv, .chroma .vc, .chroma .vg, .chroma .vi { color: var(--sp-fg); }
+.chroma .py { color: var(--sp-fg); }
+.chroma .p { color: var(--sp-fg-dim); }
+.chroma .c, .chroma .ch, .chroma .cm, .chroma .c1, .chroma .cs, .chroma .cp, .chroma .cpf { color: var(--sp-fg-dim); font-style: italic; }
+.chroma .nt { color: var(--sp-brasa); }
+.chroma .nd { color: var(--sp-estaiada); }
