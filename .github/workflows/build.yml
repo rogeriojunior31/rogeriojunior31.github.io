@@ -1,13 +1,18 @@
 # Build reutilizável: usado pelo CI (PRs) e pelo Deploy (main).
+# Só leitura: actions de terceiros rodam aqui, então este job nunca recebe permissão de publicar.
+# Actions fixadas por SHA (o Dependabot atualiza o SHA e o comentário da versão).
 name: Build
 
 on:
   workflow_call:
     inputs:
       deploy:
-        description: Configura o GitHub Pages e envia o site como artifact do Pages.
+        description: Envia o site como artifact do GitHub Pages.
         type: boolean
         default: false
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -16,36 +21,32 @@ jobs:
       HUGO_ENVIRONMENT: production
       TZ: America/Sao_Paulo
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       # Instala hugo-extended e go nas versões do mise.toml.
-      - uses: jdx/mise-action@v4
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
 
       - name: Cache Hugo modules
-        uses: actions/cache@v6
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/hugo_cache
           key: hugo-${{ runner.os }}-${{ hashFiles('go.sum') }}
           restore-keys: hugo-${{ runner.os }}-
 
-      - name: Configure Pages
-        id: pages
-        if: inputs.deploy
-        uses: actions/configure-pages@v6
-
+      # baseURL vem do config/_default/hugo.toml.
       - name: Build
-        env:
-          BASE_URL: ${{ steps.pages.outputs.base_url }}
-        run: hugo --gc --minify --panicOnWarning ${BASE_URL:+--baseURL "$BASE_URL/"}
+        run: hugo --gc --minify --panicOnWarning
 
       - name: Check internal links
-        uses: lycheeverse/lychee-action@v2
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:
           args: --offline --no-progress --root-dir "${{ github.workspace }}/public" "./public/**/*.html"
           fail: true
 
       - name: Upload Pages artifact
         if: inputs.deploy
-        uses: actions/upload-pages-artifact@v5
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: ./public
