@@ -5,4 +5,4 @@ summary: "Python machine learning model to estimate house prices."
 tags: ["Python", "Machine Learning"]
 ---
 
-{{< github repo="rogeriojunior31/house_price_predictor" >}}
+{{< github repo="rogeriojunior31/house_price_predictor" showThumbnail=false >}}

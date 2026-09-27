@@ -5,4 +5,4 @@ summary: "Notebook fine-tuning Gemma models in Keras using LoRA."
 tags: ["LLM", "Keras", "LoRA"]
 ---
 
-{{< github repo="rogeriojunior31/Fine-tune-Gemma-models-in-Keras-using-LoRA" >}}
+{{< github repo="rogeriojunior31/Fine-tune-Gemma-models-in-Keras-using-LoRA" showThumbnail=false >}}
