@@ -17,3 +17,8 @@
   name = "Tags"
   pageRef = "tags"
   weight = 10
+
+[[footer]]
+  name = "Cookies"
+  url = "#cookies"
+  weight = 20
