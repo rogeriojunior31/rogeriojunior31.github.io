@@ -1,0 +1,71 @@
+{{- /*
+  Aviso de consentimento (LGPD) no estilo terminal. O GA4 só é baixado após "sim".
+  Renderizado via partialCached: os textos dos dois idiomas vão juntos e o JS escolhe pelo <html lang>.
+*/ -}}
+{{- with site.Params.consentAnalytics.ga4 -}}
+{{- $cmd := partial "term-cmd.html" "cookies --analytics" -}}
+{{- $body := printf `%s<div class="term-line term-out"><span data-consent-text></span></div><div class="term-line term-out consent-actions"><button type="button" data-consent="granted"></button><button type="button" data-consent="denied"></button></div>` $cmd -}}
+<div class="consent" data-consent-box hidden role="dialog" aria-live="polite" aria-label="Cookies">
+  {{ partial "term-window.html" (dict "title" "rogerio@archlinux: ~" "body" $body) }}
+</div>
+<script>
+(() => {
+  const ID = {{ . }};
+  const PROD = {{ hugo.IsProduction }};
+  const KEY = "analytics-consent";
+  const en = (document.documentElement.lang || "").toLowerCase().startsWith("en");
+  const t = en
+    ? { text: "I use Google Analytics only to count visits. OK to enable it?", yes: "[y] yes", no: "[n] no", keyYes: "y" }
+    : { text: "Uso o Google Analytics só para contar visitas. Posso ativar?", yes: "[s] sim", no: "[n] não", keyYes: "s" };
+  const box = document.querySelector("[data-consent-box]");
+  if (!box) return;
+  box.querySelector("[data-consent-text]").textContent = t.text;
+  box.querySelector('[data-consent="granted"]').textContent = t.yes;
+  box.querySelector('[data-consent="denied"]').textContent = t.no;
+
+  const read = () => { try { return localStorage.getItem(KEY); } catch { return null; } };
+  const write = (v) => { try { localStorage.setItem(KEY, v); } catch {} };
+
+  let loaded = false;
+  const loadGA = () => {
+    if (loaded || !PROD) return;
+    loaded = true;
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { dataLayer.push(arguments); };
+    gtag("js", new Date());
+    gtag("config", ID);
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(ID);
+    document.head.appendChild(s);
+  };
+
+  const open = () => { box.hidden = false; };
+  const choose = (v) => {
+    write(v);
+    box.hidden = true;
+    if (v === "granted") loadGA();
+    // GA já carregado não descarrega sem recarregar a página.
+    else if (loaded) location.reload();
+  };
+
+  box.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-consent]");
+    if (b) choose(b.dataset.consent);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (box.hidden || e.ctrlKey || e.metaKey || e.altKey || e.target.closest("input, textarea, [contenteditable]")) return;
+    const k = e.key.toLowerCase();
+    if (k === t.keyYes || k === "y") choose("granted");
+    else if (k === "n" || k === "escape") choose("denied");
+  });
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('a[href$="#cookies"]')) { e.preventDefault(); open(); }
+  });
+
+  const saved = read();
+  if (saved === "granted") loadGA();
+  else if (saved !== "denied") open();
+})();
+</script>
+{{- end -}}

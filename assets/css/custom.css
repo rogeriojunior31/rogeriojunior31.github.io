@@ -1,3 +1,8 @@
+/* JetBrains Mono (OFL, static/fonts/jetbrains-mono/OFL.txt), servida localmente. */
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 400; font-display: swap; src: url("/fonts/jetbrains-mono/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 600; font-display: swap; src: url("/fonts/jetbrains-mono/jetbrains-mono-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "JetBrains Mono"; font-style: normal; font-weight: 700; font-display: swap; src: url("/fonts/jetbrains-mono/jetbrains-mono-latin-700-normal.woff2") format("woff2"); }
+
 /* Títulos, código e navegação em JetBrains Mono, como no terminal. */
 :root { --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
 h1, h2, h3, h4, code, pre, kbd, header nav { font-family: var(--font-mono); }
@@ -100,6 +105,16 @@ h1 { letter-spacing: -0.02em; }
 .nf-dir { display: inline-block; margin-right: 1.2rem; font-weight: 700; color: var(--sp-marginal) !important; text-decoration: none !important; }
 .nf-home { color: var(--sp-ibira) !important; text-decoration: none !important; font-weight: 700; }
 .nf-dir:hover, .nf-home:hover { color: var(--sp-vao) !important; background: var(--sp-sodio); }
+
+/* Aviso de cookies (partials/analytics-consent.html) */
+.consent { position: fixed; z-index: 60; right: 1rem; bottom: 1rem; width: min(26rem, calc(100vw - 2rem)); }
+.consent .term { margin: 0; max-width: none; font-size: .8rem; }
+.consent .term-body { padding: .8rem 1rem 1rem; }
+.consent-actions { display: flex; gap: .75rem; margin-top: .4rem; }
+.consent-actions button { font: inherit; font-weight: 700; padding: 0 .3rem; border-radius: .2rem; cursor: pointer; background: none; border: 0; }
+.consent-actions [data-consent="granted"] { color: var(--sp-ibira); }
+.consent-actions [data-consent="denied"] { color: var(--sp-fg-dim); }
+.consent-actions button:hover, .consent-actions button:focus-visible { color: var(--sp-vao); background: var(--sp-sodio); outline: none; }
 
 /* Cursor em bloco piscando. */
 .term-caret { display: inline-block; width: .6em; height: 1.1em; vertical-align: text-bottom; background: var(--sp-sodio); animation: blink 1s steps(1) infinite; }

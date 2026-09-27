@@ -6,9 +6,6 @@ enableRobotsTXT = true
 summaryLength = 0
 enableEmoji = true
 
-[services.googleAnalytics]
-  ID = "G-YCKMFCQ44T"
-
 [pagination]
   pagerSize = 100
 

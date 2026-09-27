@@ -5,7 +5,7 @@ summary: "Um tema escuro com São Paulo como referência: três variações, cor
 tags: ["Tema", "Open Source", "Astro", "Go"]
 ---
 
-{{< github repo="sp-night/sp-night.github.io" >}}
+{{< github repo="sp-night/sp-night.github.io" showThumbnail=false >}}
 
 Um esquema de cores escuro inspirado em São Paulo: a lâmpada de sódio, o concreto aparente, o vão livre do MASP, a garoa antes da chuva. São três variações e cada combinação de cores tem o contraste medido antes de ser publicada. Escuro por decisão.
 

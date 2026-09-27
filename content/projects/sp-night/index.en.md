@@ -5,7 +5,7 @@ summary: "A dark colour scheme with São Paulo as its reference: three flavours,
 tags: ["Theme", "Open Source", "Astro", "Go"]
 ---
 
-{{< github repo="sp-night/sp-night.github.io" >}}
+{{< github repo="sp-night/sp-night.github.io" showThumbnail=false >}}
 
 A dark colour scheme with São Paulo as its reference: the sodium street lamp, exposed concrete, the free span of the MASP, the drizzle before the rain. Three flavours, and every colour pairing is contrast-checked before it ships. Dark only, by decision.
 
