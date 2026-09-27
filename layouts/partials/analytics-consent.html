@@ -1,5 +1,6 @@
 {{- /*
   Aviso de consentimento (LGPD) no estilo terminal. O GA4 só é baixado após "sim".
+  Sem resposta, reaparece só na próxima visita; o link "Cookies" do rodapé reabre a qualquer momento.
   Renderizado via partialCached: os textos dos dois idiomas vão juntos e o JS escolhe pelo <html lang>.
 */ -}}
 {{- with site.Params.consentAnalytics.ga4 -}}
@@ -63,9 +64,14 @@
     if (e.target.closest('a[href$="#cookies"]')) { e.preventDefault(); open(); }
   });
 
+  // Sem resposta, o aviso aparece uma vez por visita (sessionStorage); ignorar equivale a "não".
+  const SEEN = "analytics-consent-seen";
+  const seen = () => { try { return sessionStorage.getItem(SEEN) === "1"; } catch { return false; } };
+  const markSeen = () => { try { sessionStorage.setItem(SEEN, "1"); } catch {} };
+
   const saved = read();
   if (saved === "granted") loadGA();
-  else if (saved !== "denied") open();
+  else if (saved !== "denied" && !seen()) { markSeen(); open(); }
 })();
 </script>
 {{- end -}}
