@@ -9,7 +9,7 @@ h1 { letter-spacing: -0.02em; }
   border: 1px solid var(--sp-fiacao); border-radius: .6rem;
   background: var(--sp-vao); color: var(--sp-fg);
   font-family: var(--font-mono); font-size: .9rem; line-height: 1.7;
-  box-shadow: 0 20px 50px -20px rgb(0 0 0 / .6), 0 0 40px -10px rgb(var(--color-primary-500) / .12);
+  box-shadow: 0 20px 50px -20px rgb(0 0 0 / .6), 0 0 40px -10px rgba(var(--color-primary-500), .12);
 }
 .term-bar { display: flex; align-items: center; gap: .75rem; padding: .5rem .8rem; background: var(--sp-concreto); border-bottom: 1px solid var(--sp-fiacao); }
 .term-dots { display: flex; gap: .4rem; }
