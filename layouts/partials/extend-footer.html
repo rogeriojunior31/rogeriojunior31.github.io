@@ -21,7 +21,7 @@
 
   // Digita o texto de um elemento, caractere por caractere.
   const type = async (el, speed) => {
-    const text = el.textContent;
+    const text = el.textContent.trim();
     el.textContent = "";
     el.classList.add("is-typing");
     for (const ch of text) { el.textContent += ch; await sleep(speed + Math.random() * speed); }
@@ -47,9 +47,20 @@
     terms.forEach((t) => seen.observe(t));
   } else terms.forEach(play);
 
-  // Títulos de página digitados (exceto páginas com terminal).
+  // Títulos digitados, exceto em páginas com terminal no conteúdo (o aviso de cookies do rodapé não conta).
+  // Na home, a linha do cargo (h2 logo após o nome) é digitada em seguida.
   const h1 = document.querySelector("#main-content h1");
-  if (h1 && !document.querySelector("[data-term]") && h1.children.length === 0) type(h1, 22);
+  if (h1 && !document.querySelector("#main-content [data-term]") && h1.children.length === 0) {
+    const next = h1.parentElement?.tagName === "HEADER" ? h1.nextElementSibling : null;
+    const sub = next?.tagName === "H2" && next.children.length === 0 ? next : null;
+    if (sub) sub.style.visibility = "hidden";
+    type(h1, 22).then(async () => {
+      if (!sub) return;
+      await sleep(150);
+      sub.style.visibility = "";
+      await type(sub, 30);
+    });
+  }
 
   // Cards aparecem em sequência, como saída de comando.
   document.querySelectorAll("#main-content .article-link--card").forEach((el, i) => {
