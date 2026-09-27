@@ -1,0 +1,46 @@
+{{ define "main" }}
+  {{/* GitHub Pages serve só o /404.html da raiz, inclusive para caminhos em /en/.
+    Por isso a página traz um bloco por idioma e o script escolhe pelo caminho. */}}
+  <section class="nf">
+    <div class="nf-bg" aria-hidden="true">404</div>
+    {{ range hugo.Sites }}
+      {{ $lang := .Language.Lang }}
+      {{ $s := dict
+        "kicker" "erro 404"
+        "title" "Página não encontrada"
+        "hint" "# essa página não existe. tente uma destas:"
+        "home" "voltar para o início"
+      }}
+      {{ if eq $lang "en" }}
+        {{ $s = dict
+          "kicker" "error 404"
+          "title" "Page not found"
+          "hint" "# this page doesn't exist. try one of these:"
+          "home" "back to home"
+        }}
+      {{ end }}
+      {{ $links := "" }}
+      {{ range .Menus.main }}
+        {{ $links = printf `%s<a class="nf-dir" href="%s">%s/</a>` $links .URL (lower .Name) }}
+      {{ end }}
+      {{ $body := printf `<div class="term-line term-cmd"><span class="term-prompt">❯</span> <span class="term-text" data-nf-cmd>cd /</span></div><div class="term-line term-out nf-err">cd: no such file or directory: <span data-nf-path>/</span></div><div class="term-line term-out nf-hint">%s</div>%s<div class="term-line term-out">%s</div>%s<div class="term-line term-out"><a class="nf-home" href="%s">← %s</a></div>`
+        $s.hint (partial "term-cmd.html" "ls ~") $links (partial "term-cmd.html" "cd ~") .Home.RelPermalink $s.home
+      }}
+      <div class="nf-lang" data-lang="{{ $lang }}" {{ if ne $lang site.Language.Lang }}hidden{{ end }}>
+        <p class="nf-kicker">{{ $s.kicker }}</p>
+        <h1 class="nf-title">{{ $s.title }}</h1>
+        {{ partial "term-window.html" (dict "title" "rogerio@archlinux: ~" "body" $body) }}
+      </div>
+    {{ end }}
+    <script>
+      (() => {
+        const path = decodeURIComponent(location.pathname);
+        const lang = /^\/en(\/|$)/.test(path) ? "en" : "{{ site.Home.Language.Lang }}";
+        const blocks = document.querySelectorAll(".nf-lang");
+        if ([...blocks].some((b) => b.dataset.lang === lang)) blocks.forEach((b) => (b.hidden = b.dataset.lang !== lang));
+        document.querySelectorAll("[data-nf-cmd]").forEach((el) => (el.textContent = "cd " + path));
+        document.querySelectorAll("[data-nf-path]").forEach((el) => (el.textContent = path));
+      })();
+    </script>
+  </section>
+{{ end }}
