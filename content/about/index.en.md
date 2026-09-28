@@ -39,6 +39,7 @@ kaggle.timer | waiting | ML experiments
 ## Off the clock
 
 - **[SP Night]({{< ref "projects/sp-night" >}})**: a dark colour scheme with São Paulo as its reference. This site uses the Pico do Jaraguá flavour.
+- **[lazyagents]({{< ref "projects/lazyagents" >}})**: a TUI to manage the skills, sessions and usage of AI coding agents, open source since v0.3.
 - **Homelab**: self-hosting and open source.
 - **[Kaggle](https://www.kaggle.com/maskara31)**: ML experiments, like [fine-tuning Gemma with LoRA]({{< ref "projects/gemma-lora" >}}).
 - **Retro games**: chasing achievements on [RetroAchievements](https://retroachievements.org/user/Doggy31). Everything else lives on [Steam](https://steamcommunity.com/id/melvindoooo/).
