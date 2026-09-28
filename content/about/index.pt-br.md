@@ -40,6 +40,7 @@ kaggle.timer | waiting | experimentos de ML
 ## Fora do expediente
 
 - **[SP Night]({{< ref "projects/sp-night" >}})**: um tema escuro com São Paulo como referência. Este site usa o flavor Pico do Jaraguá.
+- **[lazyagents]({{< ref "projects/lazyagents" >}})**: uma TUI para gerenciar skills, sessões e consumo dos agentes de código com IA, open source desde a v0.3.
 - **Homelab**: self-hosting e open source.
 - **[Kaggle](https://www.kaggle.com/maskara31)**: experimentos de ML, como o [fine-tuning do Gemma com LoRA]({{< ref "projects/gemma-lora" >}}).
 - **Jogos retrô**: caçando conquistas no [RetroAchievements](https://retroachievements.org/user/Doggy31). O resto fica na [Steam](https://steamcommunity.com/id/melvindoooo/).
