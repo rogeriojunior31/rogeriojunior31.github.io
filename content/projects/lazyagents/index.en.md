@@ -23,6 +23,7 @@ go install github.com/rogeriojunior31/lazyagents@latest
 
 Binaries for Linux, macOS and Windows are on the releases page too.
 
+{{< button href="/en/docs/lazyagents/" >}}Documentation{{< /button >}}
 {{< button href="https://github.com/rogeriojunior31/lazyagents" target="_blank" >}}github.com/rogeriojunior31/lazyagents{{< /button >}}
 
 > The TUI uses the SP Night palette.

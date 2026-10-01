@@ -35,6 +35,10 @@ jobs:
           key: hugo-${{ runner.os }}-${{ hashFiles('go.sum') }}
           restore-keys: hugo-${{ runner.os }}-
 
+      # Docs dos projetos (data/docs.yaml) sempre na última release, mesmo que o go.mod esteja atrás.
+      - name: Project docs at their latest release
+        run: scripts/docs-latest.sh
+
       # baseURL vem do config/_default/hugo.toml.
       - name: Build
         run: hugo --gc --minify --panicOnWarning

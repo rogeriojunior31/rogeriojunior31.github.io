@@ -1,0 +1,11 @@
+# Projetos com documentação em /docs/. Cada um precisa de um import em config/_default/module.toml
+# montando o docs/ do repositório em assets/docs/<slug>/.
+- slug: lazyagents
+  name: lazyagents
+  repo: rogeriojunior31/lazyagents
+  branch: main
+  # Onde ficam as traduções: "repo" (docs/pt-br/ no projeto) ou "site" (docs-site/<slug>/pt-br/ aqui).
+  translations: repo
+  summary:
+    pt-br: "TUI e CLI em Go para gerenciar skills, sessões, consumo, providers e hooks dos seus agentes de código."
+    en: "A Go TUI and CLI to manage your coding agents' skills, sessions, usage, providers and hooks."

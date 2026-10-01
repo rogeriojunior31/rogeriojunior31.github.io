@@ -1,0 +1,126 @@
+{{- /*
+  Gera /docs/<slug>/… para cada projeto de data/docs.yaml, juntando duas fontes:
+
+  1. O docs/ do repositório (Hugo Module → assets/docs/<slug>/), em inglês. Regras:
+     título = primeiro "# H1"; docs/README.md é a página do projeto; a ordem segue a ordem
+     dos links no README; docs/dev/ não é publicado; docs/pt-br/<caminho> traduz <caminho>.
+  2. A camada do site, docs-site/<slug>/<idioma>/ (→ assets/docs-site/…):
+     - mesmo caminho de uma página do repo = tradução daquela página nesse idioma;
+     - caminho novo = página que só existe no site, nesse idioma.
+     Front matter opcional: title, weight. As páginas do repo recebem 10, 20, 30… na ordem
+     dos links do README; weight 1 coloca uma página do site no topo, 15 entre a 1ª e a 2ª.
+
+  Tradução: repo docs/pt-br/ > docs-site/<slug>/pt-br/ > texto original com aviso.
+  Cada tradução guarda "<!-- source: <marca> -->" (ou "source:" no front matter), a marca do
+  original que foi traduzido: 12 primeiros caracteres do sha256 do arquivo em inglês
+  (sha256sum docs/<caminho> | cut -c1-12). Se o original mudar, a página mostra
+  o aviso de tradução desatualizada. /docs/traducoes/ lista o estado e a marca atual de cada página.
+*/ -}}
+{{- $status := slice }}
+{{- range hugo.Data.docs }}
+  {{- $proj := . }}
+  {{- $root := printf "docs/%s/" $proj.slug }}
+  {{- $siteRoot := printf "docs-site/%s/" $proj.slug }}
+  {{- $langs := slice }}{{ range hugo.Sites }}{{ $langs = $langs | append .Language.Name }}{{ end }}
+
+  {{- $order := slice }}
+  {{- with resources.Get (printf "%sREADME.md" $root) }}
+    {{- range findRESubmatch `\]\(([^)#\s]+\.md)` .Content }}{{ $order = $order | append (index . 1) }}{{ end }}
+  {{- end }}
+
+  {{- $repoRels := slice }}
+  {{- range resources.Match (printf "%s**.md" $root) }}
+    {{- $rel := strings.TrimPrefix (printf "/%s" $root) .Name | strings.TrimPrefix $root }}
+    {{- if or (strings.HasPrefix $rel "dev/") (strings.HasPrefix $rel "pt-br/") }}{{ continue }}{{ end }}
+    {{- $repoRels = $repoRels | append $rel }}
+  {{- end }}
+
+  {{- /* Uma página por idioma: o texto do repo, ou a tradução quando existir. */ -}}
+  {{- range $rel := $repoRels }}
+    {{- $p := strings.TrimSuffix ".md" $rel }}
+    {{- $kind := "page" }}
+    {{- if eq $rel "README.md" }}{{ $p = "" }}{{ $kind = "section" }}
+    {{- else if eq (path.Base $rel) "README.md" }}{{ $p = path.Dir $rel }}{{ end }}
+    {{- $weight := 1000 }}
+    {{- range $i, $o := $order }}{{ if and (eq $o $rel) (eq $weight 1000) }}{{ $weight = mul (add $i 1) 10 }}{{ end }}{{ end }}
+    {{- $origRaw := (resources.Get (printf "%s%s" $root $rel)).Content }}
+    {{- $orig := partial "docs/parse.html" $origRaw }}
+    {{- $hash := substr (sha256 $origRaw) 0 12 }}
+    {{- range $lang := $langs }}
+      {{- $doc := $orig }}
+      {{- $origin := "repo" }}
+      {{- $translated := false }}
+      {{- $tstate := "" }}
+      {{- $file := printf "docs/%s" $rel }}
+      {{- $linkBase := $rel }}
+      {{- if ne $lang "en" }}
+        {{- with resources.Get (printf "%s%s/%s" $root $lang $rel) }}
+          {{- $doc = partial "docs/parse.html" .Content }}{{ $translated = true }}{{ $file = printf "docs/%s/%s" $lang $rel }}{{ $linkBase = printf "%s/%s" $lang $rel }}
+        {{- else }}
+          {{- with resources.Get (printf "%s%s/%s" $siteRoot $lang $rel) }}
+            {{- $doc = partial "docs/parse.html" .Content }}{{ $translated = true }}{{ $origin = "site" }}{{ $file = printf "docs-site/%s/%s/%s" $proj.slug $lang $rel }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- if ne $lang "en" }}
+        {{- $tstate = "missing" }}
+        {{- if $translated }}
+          {{- $tstate = cond (eq $doc.source $hash) "ok" (cond (ne $doc.source "") "stale" "unmarked") }}
+        {{- end }}
+        {{- $status = $status | append (dict "lang" $lang "proj" $proj.name "slug" $proj.slug "path" (path.Join $proj.slug $p) "rel" $rel "file" $file "state" $tstate "hash" $hash "title" $orig.title "translations" ($proj.translations | default "repo") "repo" $proj.repo) }}
+      {{- end }}
+      {{- $.AddPage (dict
+        "path" (path.Join $proj.slug $p)
+        "sites" (dict "matrix" (dict "languages" (slice $lang)))
+        "kind" $kind
+        "title" (cond (eq $kind "section") $doc.title (printf "%s · %s" $doc.title $proj.name))
+        "linkTitle" $doc.title
+        "weight" (cond (isset $doc.fm "weight") $doc.fm.weight $weight)
+        "content" (dict "mediaType" "text/markdown" "value" $doc.body)
+        "params" (dict
+          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main")
+          "docsSource" $rel "docsLinkBase" $linkBase "docsOrigin" $origin "docsFile" $file
+          "docsTranslated" $translated "docsTranslationState" $tstate "docsSourceHash" $hash
+          "showTableOfContents" true)
+      ) }}
+    {{- end }}
+  {{- end }}
+
+  {{- /* Páginas que só existem no site. */ -}}
+  {{- range $lang := $langs }}
+    {{- range resources.Match (printf "%s%s/**.md" $siteRoot $lang) }}
+      {{- $rel := strings.TrimPrefix (printf "/%s%s/" $siteRoot $lang) .Name | strings.TrimPrefix (printf "%s%s/" $siteRoot $lang) }}
+      {{- if in $repoRels $rel }}{{ continue }}{{ end }}
+      {{- $doc := partial "docs/parse.html" .Content }}
+      {{- $.AddPage (dict
+        "path" (path.Join $proj.slug (strings.TrimSuffix ".md" $rel))
+        "sites" (dict "matrix" (dict "languages" (slice $lang)))
+        "title" (printf "%s · %s" $doc.title $proj.name)
+        "linkTitle" $doc.title
+        "weight" (cond (isset $doc.fm "weight") $doc.fm.weight 500)
+        "content" (dict "mediaType" "text/markdown" "value" $doc.body)
+        "params" (dict
+          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main")
+          "docsSource" $rel "docsOrigin" "site" "docsFile" (printf "docs-site/%s/%s/%s" $proj.slug $lang $rel)
+          "docsTranslated" false "docsSiteOnly" true
+          "showTableOfContents" true)
+      ) }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+
+{{- /* /docs/traducoes/: estado das traduções, para saber o que revisar. Fora de menus, listas e busca. */ -}}
+{{- range $lang := slice "pt-br" }}
+  {{- $rows := slice "| Página | Arquivo da tradução | Estado | Marca atual (`source:`) |" "|---|---|---|---|" }}
+  {{- $labels := dict "ok" "✅ em dia" "stale" "⚠️ original mudou" "unmarked" "❔ sem marca" "missing" "— não traduzida" }}
+  {{- range sort (where $status "lang" $lang) "path" }}
+    {{- $rows = $rows | append (printf "| [%s · %s](/docs/%s/) | `%s` | %s | `%s` |" .proj .title .path (cond (eq .state "missing") (cond (eq .translations "site") (printf "docs-site/%s/%s/%s" .slug $lang .rel) (printf "docs/%s/%s (repo %s)" $lang .rel .repo)) .file) (index $labels .state) .hash) }}
+  {{- end }}
+  {{- $.AddPage (dict
+    "path" "traducoes"
+    "sites" (dict "matrix" (dict "languages" (slice $lang)))
+    "title" "Estado das traduções"
+    "content" (dict "mediaType" "text/markdown" "value" (printf "Para traduzir uma página, crie o arquivo indicado com `<!-- source: <marca atual> -->` logo abaixo do título. Quando o original em inglês mudar, a página passa para \"original mudou\": revise a tradução e atualize a marca.\n\n%s\n" (delimit $rows "\n")))
+    "params" (dict "excludeFromSearch" true "docsStatusPage" true "sitemap" (dict "disable" true) "robots" "noindex")
+  ) }}
+{{- end }}

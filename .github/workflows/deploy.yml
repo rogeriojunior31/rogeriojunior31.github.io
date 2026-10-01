@@ -1,10 +1,16 @@
-# Publica no GitHub Pages a cada push na main.
+# Publica no GitHub Pages a cada push na main e quando um projeto lança uma release
+# (repository_dispatch "docs-release", enviado pelo project-docs.yml do projeto).
+# O schedule diário cobre um projeto sem o token de aviso configurado.
 # Permissão de escrita só no job de deploy, que usa apenas a action oficial.
 name: Deploy
 
 on:
   push:
     branches: [main]
+  repository_dispatch:
+    types: [docs-release]
+  schedule:
+    - cron: "17 9 * * *"
   workflow_dispatch:
 
 permissions: {}

@@ -1,0 +1,18 @@
+{{- /*
+  Markdown de docs → dict title/body/fm/source.
+  Título = fm.title ou o primeiro "# H1". Marca da tradução = "<!-- source: <12 hex> -->"
+  (invisível no GitHub) ou "source:" no front matter. Os dois são opcionais.
+*/ -}}
+{{- $raw := . }}
+{{- $fm := dict }}
+{{- with findRESubmatch `(?s)\A---\n(.*?)\n---\n` $raw 1 }}
+  {{- $fm = transform.Unmarshal (index (index . 0) 1) }}
+  {{- $raw = replaceRE `(?s)\A---\n.*?\n---\n` "" $raw 1 }}
+{{- end }}
+{{- $source := string ($fm.source | default "") }}
+{{- with findRESubmatch `<!--\s*source:\s*([0-9a-f]{12})\s*-->` $raw 1 }}{{ $source = index (index . 0) 1 }}{{ end }}
+{{- $raw = replaceRE `<!--\s*source:\s*[0-9a-f]{12}\s*-->\n?` "" $raw }}
+{{- $title := $fm.title | default "" }}
+{{- with findRESubmatch `(?m)^#[ \t]+(.+?)[ \t]*$` $raw 1 }}{{ if not $title }}{{ $title = index (index . 0) 1 }}{{ end }}{{ end }}
+{{- $body := replaceRE `(?m)^#[ \t]+.+\n?` "" $raw 1 }}
+{{- return (dict "title" $title "body" $body "fm" $fm "source" $source) }}

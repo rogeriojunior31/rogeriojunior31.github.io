@@ -1,0 +1,41 @@
+{{- /*
+  Links dos docs escritos para o GitHub (relativos ao arquivo .md):
+    x.md / ../x.md     → página gerada em /docs/<slug>/…
+    pasta/README.md    → página da pasta
+    ../ARQUIVO (fora de docs/) → github.com/<repo>/blob/<branch>/ARQUIVO
+    arquivo dentro de docs/ (não .md) → recurso publicado, ou o GitHub
+*/ -}}
+{{- $p := .Page -}}
+{{- $u := urls.Parse .Destination -}}
+{{- $href := .Destination -}}
+{{- $frag := cond (ne $u.Fragment "") (printf "#%s" $u.Fragment) "" -}}
+{{- if strings.HasPrefix .Destination "#" -}}
+  {{- $href = .Destination -}}
+{{- else if and (not $u.IsAbs) $u.Path $p.Params.docsProject -}}
+  {{- $proj := $p.Params.docsProject -}}
+  {{- $joined := path.Clean (path.Join (path.Dir ($p.Params.docsLinkBase | default $p.Params.docsSource)) $u.Path) -}}
+  {{- range hugo.Sites }}{{ with .Language.Name }}{{ if ne . "en" }}{{ $joined = strings.TrimPrefix (printf "%s/" .) $joined }}{{ end }}{{ end }}{{ end -}}
+  {{- $gh := printf "https://github.com/%s/blob/%s" $p.Params.docsRepo $p.Params.docsBranch -}}
+  {{- if or (eq $joined "..") (strings.HasPrefix $joined "../") -}}
+    {{- $href = printf "%s/%s%s" $gh (strings.TrimPrefix "../" $joined) $frag -}}
+  {{- else if strings.HasSuffix $joined ".md" -}}
+    {{- $target := strings.TrimSuffix ".md" $joined -}}
+    {{- if eq (path.Base $joined) "README.md" }}{{ $target = path.Dir $joined }}{{ end -}}
+    {{- with $p.Site.GetPage (path.Join "/docs" $proj (cond (eq $target ".") "" $target)) -}}
+      {{- $href = printf "%s%s" .RelPermalink $frag -}}
+    {{- else -}}
+      {{- $href = printf "%s/docs/%s%s" $gh $joined $frag -}}
+    {{- end -}}
+  {{- else -}}
+    {{- with resources.Get (printf "docs/%s/%s" $proj $joined) -}}
+      {{- $href = .RelPermalink -}}
+    {{- else -}}
+      {{- $href = printf "%s/docs/%s%s" $gh $joined $frag -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $external := or (strings.HasPrefix $href "http:") (strings.HasPrefix $href "https:") -}}
+<a href="{{ $href }}" {{ with .Title }}title="{{ . }}"{{ end }}{{ if $external }} target="_blank" rel="noreferrer"{{ end }}>
+  {{- .Text | safeHTML -}}
+</a>
+{{- /* Trim EOF */ -}}

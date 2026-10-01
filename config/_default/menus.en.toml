@@ -9,6 +9,11 @@
   weight = 10
 
 [[main]]
+  name = "Docs"
+  pageRef = "docs"
+  weight = 20
+
+[[main]]
   name = "Resume"
   pageRef = "resume"
   weight = 30
