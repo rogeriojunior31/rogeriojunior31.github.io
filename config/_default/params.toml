@@ -17,7 +17,8 @@ enableStructuredBreadcrumbs = false
 
 replyByEmail = false
 
-# mainSections = ["section1", "section2"]
+# Seções da home ("Recente") e dos feeds. Sem isso o Hugo usa a seção com mais páginas, que seria docs.
+mainSections = ["projects", "posts"]
 # robots = ""
 
 disableImageOptimization = false

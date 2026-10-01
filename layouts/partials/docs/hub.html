@@ -1,0 +1,19 @@
+{{- $lang := site.Language.Lang -}}
+<article class="docs-hub">
+  <header class="mt-5 max-w-prose">
+    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .Title }}</h1>
+    {{ with .Description }}<p class="mt-2 text-neutral-500 dark:text-neutral-400">{{ . }}</p>{{ end }}
+  </header>
+  <div class="docs-cards">
+    {{ range hugo.Data.docs }}
+      {{ $d := . }}
+      {{ with site.GetPage (printf "/docs/%s" .slug) }}
+        <a class="docs-card" href="{{ .RelPermalink }}">
+          <span class="docs-card-name">~/docs/{{ $d.name }}</span>
+          <span class="docs-card-summary">{{ index $d.summary $lang }}</span>
+          <span class="docs-card-meta">github.com/{{ .Params.docsRepo }} · {{ len .RegularPagesRecursive }} {{ cond (eq $lang "en") "pages" "páginas" }}</span>
+        </a>
+      {{ end }}
+    {{ end }}
+  </div>
+</article>

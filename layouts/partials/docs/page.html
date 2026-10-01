@@ -1,0 +1,44 @@
+{{- $proj := .Params.docsProject -}}
+{{- $root := site.GetPage (printf "/docs/%s" $proj) -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $edit := printf "https://github.com/%s/blob/%s/%s" .Params.docsRepo .Params.docsBranch .Params.docsFile -}}
+{{- if eq .Params.docsOrigin "site" }}{{ $edit = printf "https://github.com/rogeriojunior31/rogeriojunior31.github.io/blob/main/%s" .Params.docsFile }}{{ end -}}
+<div class="docs-layout">
+  <aside class="docs-nav print:hidden">
+    {{ partial "docs/nav.html" (dict "root" $root "current" .) }}
+  </aside>
+
+  <article class="docs-main min-w-0">
+    <nav class="docs-crumbs" aria-label="breadcrumb">
+      <a href="{{ (site.GetPage "/docs").RelPermalink }}">docs</a>
+      <span>/</span><a href="{{ $root.RelPermalink }}">{{ $proj }}</a>
+      {{ with path.Dir .Params.docsSource }}{{ if ne . "." }}<span>/</span><span>{{ . }}</span>{{ end }}{{ end }}
+    </nav>
+    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .LinkTitle }}</h1>
+    {{ if eq .Params.docsTranslationState "stale" }}
+      {{ with index (where .AllTranslations "Language.Lang" "en") 0 }}
+        <p class="docs-lang-note docs-stale">O original em inglês mudou depois desta tradução. Confira a <a href="{{ .RelPermalink }}">versão atual em inglês</a>.</p>
+      {{ end }}
+    {{ else if .Params.docsTranslated }}
+      {{ with index (where .AllTranslations "Language.Lang" "en") 0 }}
+        <p class="docs-lang-note">Tradução da <a href="{{ .RelPermalink }}">página original em inglês</a>, que é a referência se algo estiver diferente.</p>
+      {{ end }}
+    {{ else if and (not $en) (not .Params.docsSiteOnly) }}
+      <p class="docs-lang-note">Esta página ainda está em inglês, como no repositório.</p>
+    {{ end }}
+
+    <section class="flex flex-col max-w-full mt-6 prose dark:prose-invert lg:flex-row">
+      {{ if in .TableOfContents "<ul" }}
+        <div class="order-first lg:ms-auto px-0 lg:order-last lg:ps-8 lg:max-w-2xs">
+          <div class="toc ps-5 print:hidden lg:sticky lg:top-10">{{ partial "toc.html" . }}</div>
+        </div>
+      {{ end }}
+      <div class="min-w-0 article-content max-w-prose mb-12">{{ .Content }}</div>
+    </section>
+
+    <footer class="docs-foot print:hidden">
+      <a href="{{ $edit }}" target="_blank" rel="noreferrer">{{ if eq .Params.docsOrigin "site" }}{{ cond $en "Edit this page (site)" "Editar esta página (site)" }}{{ else }}{{ cond $en "Edit this page on GitHub" "Editar esta página no GitHub" }}{{ end }}</a>
+      <a href="https://github.com/{{ .Params.docsRepo }}" target="_blank" rel="noreferrer">github.com/{{ .Params.docsRepo }}</a>
+    </footer>
+  </article>
+</div>

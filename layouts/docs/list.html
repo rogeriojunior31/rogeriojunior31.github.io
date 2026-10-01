@@ -1,0 +1,8 @@
+{{- /* /docs/ = índice dos projetos; /docs/<slug>/ = página do projeto (docs/README.md). */ -}}
+{{ define "main" }}
+  {{ if eq .Path "/docs" }}
+    {{ partial "docs/hub.html" . }}
+  {{ else }}
+    {{ partial "docs/page.html" . }}
+  {{ end }}
+{{ end }}

@@ -4,3 +4,23 @@ min = "0.163.0"
 
 [[imports]]
 path = "github.com/nunocoracao/blowfish/v3"
+
+# Docs dos projetos: a pasta docs/ de cada repositório vira assets/docs/<slug>/ e
+# o content adapter em content/docs/_content.gotmpl gera as páginas. Registro em data/docs.yaml.
+# Testar docs locais ainda não publicados:
+#   HUGO_MODULE_REPLACEMENTS="github.com/rogeriojunior31/lazyagents -> $HOME/Projects/lazyagents" hugo server
+[[imports]]
+path = "github.com/rogeriojunior31/lazyagents"
+[[imports.mounts]]
+source = "docs"
+target = "assets/docs/lazyagents"
+files = ["! **.go", "! dev/**"]
+
+# Camada de docs do próprio site (traduções pt-BR e páginas que só existem aqui), em docs-site/<slug>/<idioma>/.
+# Declarar um mount do projeto desliga os padrões do componente "assets", por isso ele é repetido.
+[[mounts]]
+source = "assets"
+target = "assets"
+[[mounts]]
+source = "docs-site"
+target = "assets/docs-site"

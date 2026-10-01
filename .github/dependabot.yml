@@ -9,10 +9,13 @@ updates:
       actions:
         patterns: ["*"]
 
-  # Tema Blowfish (Hugo Module). Aparece como indirect no go.mod, por isso "all".
+  # Tema Blowfish (Hugo Module). Aparece como indirect no go.mod, por isso "all", mas só ele:
+  # os docs dos projetos também entram no go.mod e o build já usa a última release deles
+  # (scripts/docs-latest.sh), junto com as dependências Go que eles arrastam.
   - package-ecosystem: gomod
     directory: /
     schedule:
       interval: weekly
     allow:
-      - dependency-type: all
+      - dependency-name: "github.com/nunocoracao/blowfish/*"
+        dependency-type: all

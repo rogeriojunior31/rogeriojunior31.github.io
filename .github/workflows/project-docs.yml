@@ -1,0 +1,109 @@
+# Workflow reutilizável para o docs/ de qualquer projeto meu. No repositório do projeto,
+# .github/workflows/docs.yml:
+#
+#   on:
+#     pull_request:
+#       paths: ["docs/**"]
+#     push:
+#       tags: ["v*"]
+#     workflow_dispatch:
+#   permissions:
+#     contents: read
+#   jobs:
+#     docs:
+#       uses: rogeriojunior31/rogeriojunior31.github.io/.github/workflows/project-docs.yml@main
+#       secrets:
+#         site_token: ${{ secrets.SITE_DISPATCH_TOKEN }}
+#
+# - Sempre: valida os docs (cada página com "# H1", links relativos existentes) e avisa
+#   quando uma tradução (docs/pt-br/…) ficou atrás do original em inglês.
+# - Numa tag vX.Y.Z: avisa o site, que publica os docs dessa release em ~2 min.
+#   SITE_DISPATCH_TOKEN = token fine-grained só deste repositório do site, Contents: read and write.
+#   Sem o token, o site pega a release no build diário.
+# A tag dispara direto (e não o evento "release") porque releases criadas com GITHUB_TOKEN
+# não disparam outros workflows.
+name: Project docs
+
+on:
+  workflow_call:
+    secrets:
+      site_token:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Every page starts with a "# H1"
+        run: |
+          test -f docs/README.md || { echo "::error file=docs/README.md::docs/README.md is the project's docs index and is required"; exit 1; }
+          fail=0
+          while IFS= read -r -d '' f; do
+            first=$(grep -m1 -E '^#{1,6} ' "$f" || true)
+            case "$first" in
+              "# "*) ;;
+              *) echo "::error file=$f::the first heading must be a '# H1' (it becomes the page title)"; fail=1 ;;
+            esac
+          done < <(find docs -name '*.md' -not -path 'docs/dev/*' -print0)
+          exit $fail
+
+      - name: Translations follow the English original
+        # docs/<idioma>/<caminho>.md traduz docs/<caminho>.md e guarda "<!-- source: <marca> -->",
+        # a marca do original traduzido (sha256sum docs/<caminho> | cut -c1-12). Marca diferente =
+        # o inglês mudou depois da tradução: aviso no PR, sem bloquear.
+        run: |
+          stale=0
+          while IFS= read -r -d '' dir; do
+            lang=${dir#docs/}
+            while IFS= read -r -d '' f; do
+              rel=${f#"$dir"/}
+              orig="docs/$rel"
+              if [ ! -f "$orig" ]; then
+                echo "::error file=$f::translation of $orig, which does not exist"; exit 1
+              fi
+              cur=$(sha256sum "$orig" | cut -c1-12)
+              mark=$(grep -oE '<!--[[:space:]]*source:[[:space:]]*[0-9a-f]{12}[[:space:]]*-->' "$f" | grep -oE '[0-9a-f]{12}' | head -1 || true)
+              [ -n "$mark" ] || mark=$(sed -nE '1,/^---$/ s/^source:[[:space:]]*([0-9a-f]{12}).*/\1/p' "$f" | head -1)
+              if [ -z "$mark" ]; then
+                echo "::warning file=$f::no <!-- source: ... --> mark; the current English version is $cur"
+              elif [ "$mark" != "$cur" ]; then
+                echo "::warning file=$f::$orig changed after this $lang translation: review it and set <!-- source: $cur -->"
+                stale=$((stale + 1))
+              fi
+            done < <(find "$dir" -name '*.md' -print0)
+          done < <(find docs -mindepth 1 -maxdepth 1 -type d -regextype posix-extended -regex 'docs/[a-z]{2}(-[a-z]{2})?' -print0)
+          echo "Stale translations: $stale"
+
+      - name: Relative links exist
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --no-progress --exclude-path docs/dev "./docs/**/*.md"
+          fail: true
+
+  publish:
+    needs: validate
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tell the site to publish this release's docs
+        env:
+          GH_TOKEN: ${{ secrets.site_token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::notice::SITE_DISPATCH_TOKEN not set: the site picks up $TAG in its daily build."
+            exit 0
+          fi
+          gh api repos/rogeriojunior31/rogeriojunior31.github.io/dispatches \
+            -f event_type=docs-release \
+            -f "client_payload[repo]=$REPO" \
+            -f "client_payload[tag]=$TAG"
+          echo "Site notified: $REPO $TAG"
