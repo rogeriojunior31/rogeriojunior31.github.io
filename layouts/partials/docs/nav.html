@@ -2,7 +2,7 @@
 {{- $root := .root -}}
 {{- $cur := .current -}}
 {{- $tree := partial "docs/tree.html" $root -}}
-<p class="docs-nav-title"><a href="{{ $root.RelPermalink }}" {{ if eq $root $cur }}aria-current="page"{{ end }}>{{ $root.Params.docsName }}</a></p>
+<p class="docs-nav-title"><a href="{{ $root.RelPermalink }}" {{ if eq $root $cur }}aria-current="page"{{ end }}>{{ if eq $root.Params.docsProject "lazyagents" }}{{ $logo := (resources.Get "img/lazyagents/logo.png").Resize "96x96 webp" }}<img class="docs-brand-logo" src="{{ $logo.RelPermalink }}" width="40" height="40" alt="">{{ end }}{{ $root.Params.docsName }}</a></p>
 <ul>
   {{ range $tree.top }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
 </ul>

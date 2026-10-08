@@ -10,12 +10,19 @@ with sync_playwright() as p:
         for lang in ('', 'en/'):
             page = browser.new_page(viewport={'width': width, 'height': 900}, reduced_motion='reduce')
             page.on('pageerror', lambda error: errors.append(str(error)))
-            for path in ('', 'projects/', 'projects/house-price-predictor/', 'projects/gemma-lora/', 'resume/', 'docs/'):
+            for path in ('', 'projects/', 'projects/lazyagents/', 'projects/house-price-predictor/', 'projects/gemma-lora/', 'resume/', 'docs/'):
                 response = page.goto(base + '/' + lang + path)
                 assert response.ok
                 assert page.locator('html').get_attribute('lang') == ('en' if lang else 'pt-BR')
                 assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, lang, path)
                 assert page.locator('h1').count() > 0
+                if path in ('', 'projects/lazyagents/'):
+                    video = page.locator('.lazy-showcase video')
+                    assert video.count() == 1
+                    assert video.get_attribute('controls') is not None
+                    assert video.get_attribute('autoplay') is None
+                    assert video.get_attribute('preload') == 'none'
+                    assert page.locator('.lazy-brand img').evaluate('(img) => img.complete && img.naturalWidth > 0')
             page.goto(base + '/' + lang)
             assert page.locator('a[href="/' + lang + 'projects/lazyagents/"]').count() > 0
             page.keyboard.press('Tab')
@@ -40,6 +47,9 @@ with sync_playwright() as p:
             page = browser.new_page(viewport={'width': width, 'height': 900}, reduced_motion='reduce')
             page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(base + '/' + lang + 'docs/lazyagents/')
+            assert page.locator('.lazy-showcase--docs video').count() == 1
+            assert page.locator('.docs-brand-logo').evaluate('(img) => img.complete && img.naturalWidth > 0')
+            assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
             pager = page.locator('.docs-pagination')
             assert pager.locator('[rel=prev]').count() == 0
             pager.locator('[rel=next]').click()
@@ -56,6 +66,12 @@ with sync_playwright() as p:
             page.emulate_media(media='print')
             assert not page.locator('.docs-pagination').is_visible()
             page.close()
+    page = browser.new_page(reduced_motion='reduce')
+    page.goto(base + '/projects/lazyagents/')
+    page.locator('.lazy-demo video').evaluate('(video) => video.play()')
+    page.wait_for_function('document.querySelector(".lazy-demo video").currentTime > 0')
+    assert 24 < page.locator('.lazy-demo video').evaluate('(video) => video.duration') < 26
+    page.close()
     page = browser.new_page(reduced_motion='reduce')
     page.on('pageerror', lambda error: errors.append(str(error)))
     pending = []

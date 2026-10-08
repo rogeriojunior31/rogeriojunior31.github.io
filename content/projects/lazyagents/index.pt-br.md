@@ -5,7 +5,7 @@ summary: "Uma TUI em Go para gerenciar, num lugar só, o que seus agentes de có
 tags: ["CLI", "TUI", "Go", "IA", "Open Source"]
 ---
 
-{{< github repo="rogeriojunior31/lazyagents" showThumbnail=false >}}
+{{< lazyagents >}}
 
 Cada agente de código guarda as próprias skills, sessões e configuração numa pasta diferente, num formato diferente. O lazyagents junta tudo num terminal só, no espírito do lazygit: uma biblioteca de skills que você liga por agente com uma tecla, o histórico de sessões de todos os agentes num lugar, e o consumo da assinatura sempre à vista.
 

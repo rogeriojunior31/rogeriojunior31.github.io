@@ -1,0 +1,28 @@
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $logo := (resources.Get "img/lazyagents/logo.png").Resize "256x256 webp" -}}
+{{- $docs := site.GetPage "/docs/lazyagents" -}}
+{{- $start := site.GetPage "/docs/lazyagents/getting-started" | default $docs -}}
+<section class="lazy-showcase lazy-showcase--{{ . }} not-prose" aria-label="{{ cond $en "Meet lazyagents" "Conheça o lazyagents" }}">
+  <div class="lazy-showcase-copy">
+    <div class="lazy-brand">
+      <img src="{{ $logo.RelPermalink }}" width="96" height="96" alt="{{ cond $en "lazyagents mascot: a sloth resting in a hammock above three robots" "Mascote do lazyagents: uma preguiça na rede sobre três robôs" }}">
+      <div><span class="lazy-eyebrow">OPEN SOURCE / GO / TUI</span><h2>lazyagents<span aria-hidden="true">_</span></h2></div>
+    </div>
+    <p class="lazy-headline">{{ cond $en "Your agents. One terminal." "Seus agentes. Um terminal." }}</p>
+    <p class="lazy-description">{{ cond $en "Enable skills, find conversations and track usage across your AI coding agents. All in one workspace." "Ative skills, encontre conversas e acompanhe o consumo dos seus agentes de código com IA. Tudo no mesmo lugar." }}</p>
+    <p class="lazy-agents">Claude Code · Codex · Gemini CLI · OpenCode · Hermes</p>
+    <div class="lazy-actions">
+      <a class="lazy-action-primary" href="{{ if eq . "docs" }}{{ $start.RelPermalink }}{{ else }}{{ $docs.RelPermalink }}{{ end }}">{{ if eq . "docs" }}{{ cond $en "Get started" "Começar agora" }}{{ else }}{{ cond $en "Explore the docs" "Explorar as docs" }}{{ end }} <span aria-hidden="true">→</span></a>
+      <a href="https://github.com/rogeriojunior31/lazyagents">GitHub <span aria-hidden="true">↗</span></a>
+      {{ if eq . "home" }}<a href="{{ (site.GetPage "/projects/lazyagents").RelPermalink }}">{{ cond $en "About the project" "Sobre o projeto" }}</a>{{ end }}
+    </div>
+  </div>
+  <figure class="lazy-demo">
+    <div class="lazy-demo-bar" aria-hidden="true"><span class="lazy-demo-dots"><i></i><i></i><i></i></span><span>~/lazyagents</span><span>25s</span></div>
+    <video controls playsinline preload="none" width="1232" height="688" poster="{{ "media/lazyagents/poster.webp" | relURL }}" aria-label="{{ cond $en "25-second demo: enabling a skill, searching a session and viewing usage. No audio." "Demonstração de 25 segundos: ativar uma skill, buscar uma sessão e consultar consumo. Sem áudio." }}">
+      <source src="{{ "media/lazyagents/demo.mp4" | relURL }}" type="video/mp4">
+      <a href="{{ "media/lazyagents/demo.mp4" | relURL }}">{{ cond $en "Download the demo" "Baixar demonstração" }}</a>
+    </video>
+    <figcaption><span>{{ cond $en "Skills → Sessions → Usage" "Skills → Sessões → Consumo" }}</span><span>{{ cond $en "Recorded with demo data · no audio" "Gravado com dados fictícios · sem áudio" }}</span></figcaption>
+  </figure>
+</section>

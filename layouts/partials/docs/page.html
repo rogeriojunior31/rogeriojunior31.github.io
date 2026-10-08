@@ -35,6 +35,8 @@
       <p class="docs-lang-note">Esta página ainda está em inglês, como no repositório.</p>
     {{ end }}
 
+    {{ if and (eq $proj "lazyagents") (eq . $root) }}{{ partial "lazyagents-showcase.html" "docs" }}{{ end }}
+
     <section class="flex flex-col max-w-full mt-6 prose dark:prose-invert lg:flex-row">
       {{ if in .TableOfContents "<ul" }}
         <div class="order-first lg:ms-auto px-0 lg:order-last lg:ps-8 lg:max-w-2xs">

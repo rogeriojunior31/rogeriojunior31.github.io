@@ -109,6 +109,12 @@ Posts are hidden until the first one exists: add `posts` back to the menus.
 - Terminal shortcodes (`fastfetch`, `units`, `experience`, `stack`): `layouts/shortcodes/`
 - Animations and tmux bar: `layouts/partials/extend-footer.html`
 
+### lazyagents showcase
+
+The home and project pages use `{{< lazyagents >}}` (`placement="home"` on the home); the docs index uses the same `layouts/partials/lazyagents-showcase.html`. Copy is localized in the partial. The official logo is copied from the project's `docs/assets/logo.png` to `assets/img/lazyagents/logo.png`; Hugo generates WebP sizes for the showcase, docs cards and sidebar.
+
+`static/media/lazyagents/demo.mp4` is a silent 25-second edit of the project's `demo.gif` recorded with fictitious data: skills (4–12s), sessions (17–30s), usage (56–60s). It uses H.264, 20 fps and fast start. `poster.webp` is the skills frame at 8s. When updating the recording, review these cut points and the duration label in the partial. Native video controls and `preload="none"` keep playback optional and avoid downloading the video before the visitor plays it.
+
 Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 
 ## CI/CD

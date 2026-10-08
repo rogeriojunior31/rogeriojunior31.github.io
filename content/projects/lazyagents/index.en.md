@@ -5,7 +5,7 @@ summary: "A Go TUI to manage, in one place, what your AI coding agents use: skil
 tags: ["CLI", "TUI", "Go", "AI", "Open Source"]
 ---
 
-{{< github repo="rogeriojunior31/lazyagents" showThumbnail=false >}}
+{{< lazyagents >}}
 
 Every AI coding agent keeps its skills, sessions and settings in its own folder, in its own format. lazyagents brings them into one terminal, in the spirit of lazygit: one skill library you enable per agent with a keypress, every agent's session history in one place, and your subscription usage always in sight.
 
