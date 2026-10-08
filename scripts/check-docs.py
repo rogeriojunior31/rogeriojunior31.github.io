@@ -92,8 +92,10 @@ def check_site(output):
     for lang in ("", "en/"):
         project = (output / lang / "docs/lazyagents/index.html").read_text()
         assert "docs-version" in project
-        assert f"/blob/{ref}/docs/README.md" in project
-        assert "/blob/main/docs/README.md" in project, "Editing must still use the working branch"
+        title_lang = next(attrs["lang"] for tag, attrs in HTML(project).tags if tag == "h1")
+        source = "docs/pt-br/README.md" if title_lang == "pt-BR" else "docs/README.md"
+        assert f"/blob/{ref}/{source}" in project
+        assert f"/blob/main/{source}" in project, "Editing must still use the working branch"
         assert (output / lang / "docs/lazyagents/guide/skills/index.html").exists()
     check_fragments(output)
     check_reading_navigation(output)
