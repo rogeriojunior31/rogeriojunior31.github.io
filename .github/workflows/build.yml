@@ -10,6 +10,10 @@ on:
         description: Envia o site como artifact do GitHub Pages.
         type: boolean
         default: false
+      update_docs:
+        description: Atualiza docs antes de publicar; o CI usa as versões fixadas.
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -35,11 +39,15 @@ jobs:
           key: hugo-${{ runner.os }}-${{ hashFiles('go.sum') }}
           restore-keys: hugo-${{ runner.os }}-
 
-      # Docs dos projetos (data/docs.yaml) sempre na última release, mesmo que o go.mod esteja atrás.
+      # Atualização explícita no deploy; PRs validam as versões fixadas em go.mod/go.sum.
       - name: Project docs at their latest release
+        if: inputs.update_docs
         run: scripts/docs-latest.sh
 
       # baseURL vem do config/_default/hugo.toml.
+      - name: Docs regression checks
+        run: python3 scripts/check-docs.py
+
       - name: Build
         run: hugo --gc --minify --panicOnWarning
 

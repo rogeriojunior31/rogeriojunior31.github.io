@@ -5,7 +5,12 @@
 {{- if eq .Params.docsOrigin "site" }}{{ $edit = printf "https://github.com/rogeriojunior31/rogeriojunior31.github.io/blob/main/%s" .Params.docsFile }}{{ end -}}
 <div class="docs-layout">
   <aside class="docs-nav print:hidden">
-    {{ partial "docs/nav.html" (dict "root" $root "current" .) }}
+    <details class="docs-nav-toggle" data-docs-nav open>
+      <summary>{{ cond $en "Browse documentation" "Navegar pela documentação" }}</summary>
+      <nav aria-label="{{ cond $en "Project documentation" "Documentação do projeto" }}">
+        {{ partial "docs/nav.html" (dict "root" $root "current" .) }}
+      </nav>
+    </details>
   </aside>
 
   <article class="docs-main min-w-0">
@@ -15,6 +20,7 @@
       {{ with path.Dir .Params.docsSource }}{{ if ne . "." }}<span>/</span><span>{{ . }}</span>{{ end }}{{ end }}
     </nav>
     <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .LinkTitle }}</h1>
+    {{ with .Params.docsVersion }}<p class="docs-version">{{ cond $en "Documented version" "Versão documentada" }}: {{ . }}</p>{{ end }}
     {{ if eq .Params.docsTranslationState "stale" }}
       {{ with index (where .AllTranslations "Language.Lang" "en") 0 }}
         <p class="docs-lang-note docs-stale">O original em inglês mudou depois desta tradução. Confira a <a href="{{ .RelPermalink }}">versão atual em inglês</a>.</p>
@@ -37,6 +43,9 @@
     </section>
 
     <footer class="docs-foot print:hidden">
+      {{ if eq .Params.docsOrigin "repo" }}
+        <a href="{{ printf "https://github.com/%s/blob/%s/%s" .Params.docsRepo .Params.docsRef .Params.docsFile }}" target="_blank" rel="noreferrer">{{ cond $en "View source for this version" "Ver fonte desta versão" }}</a>
+      {{ end }}
       <a href="{{ $edit }}" target="_blank" rel="noreferrer">{{ if eq .Params.docsOrigin "site" }}{{ cond $en "Edit this page (site)" "Editar esta página (site)" }}{{ else }}{{ cond $en "Edit this page on GitHub" "Editar esta página no GitHub" }}{{ end }}</a>
       <a href="https://github.com/{{ .Params.docsRepo }}" target="_blank" rel="noreferrer">github.com/{{ .Params.docsRepo }}</a>
     </footer>

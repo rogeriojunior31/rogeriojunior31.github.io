@@ -19,8 +19,24 @@
 {{- $status := slice }}
 {{- range hugo.Data.docs }}
   {{- $proj := . }}
+  {{- if $proj.url }}{{ continue }}{{ end }}
   {{- $root := printf "docs/%s/" $proj.slug }}
   {{- $siteRoot := printf "docs-site/%s/" $proj.slug }}
+  {{- if not (resources.Get (printf "%sREADME.md" $root)) }}
+    {{- errorf "Docs %s: docs/README.md ausente; confira o import e mount em module.toml" $proj.slug }}
+  {{- end }}
+  {{- $ref := $proj.branch | default "main" }}
+  {{- $version := "" }}
+  {{- range hugo.Deps }}
+    {{- if and (eq .Path (printf "github.com/%s" $proj.repo)) (not .Replace) }}
+      {{- $version = strings.TrimSuffix "+incompatible" .Version }}
+      {{- with $version }}
+        {{- $ref = . }}
+        {{- /* Pseudo-versões do Go não são tags: usar o commit correspondente. */ -}}
+        {{- with findRESubmatch `-\d{14}-([0-9a-f]{12})$` . 1 }}{{ $ref = index (index . 0) 1 }}{{ end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
   {{- $langs := slice }}{{ range hugo.Sites }}{{ $langs = $langs | append .Language.Name }}{{ end }}
 
   {{- $order := slice }}
@@ -69,16 +85,19 @@
         {{- end }}
         {{- $status = $status | append (dict "lang" $lang "proj" $proj.name "slug" $proj.slug "path" (path.Join $proj.slug $p) "rel" $rel "file" $file "state" $tstate "hash" $hash "title" $orig.title "translations" ($proj.translations | default "repo") "repo" $proj.repo) }}
       {{- end }}
+      {{- $description := $doc.fm.description | default (printf "%s · %s — %s" $doc.title $proj.name (index $proj.summary $lang | default (index $proj.summary "en"))) | plainify | truncate 160 }}
       {{- $.AddPage (dict
         "path" (path.Join $proj.slug $p)
         "sites" (dict "matrix" (dict "languages" (slice $lang)))
         "kind" $kind
         "title" (cond (eq $kind "section") $doc.title (printf "%s · %s" $doc.title $proj.name))
         "linkTitle" $doc.title
+        "description" $description
         "weight" (cond (isset $doc.fm "weight") $doc.fm.weight $weight)
         "content" (dict "mediaType" "text/markdown" "value" $doc.body)
         "params" (dict
-          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main")
+          "description" $description
+          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main") "docsRef" $ref "docsVersion" $version
           "docsSource" $rel "docsLinkBase" $linkBase "docsOrigin" $origin "docsFile" $file
           "docsTranslated" $translated "docsTranslationState" $tstate "docsSourceHash" $hash
           "showTableOfContents" true)
@@ -92,15 +111,18 @@
       {{- $rel := strings.TrimPrefix (printf "/%s%s/" $siteRoot $lang) .Name | strings.TrimPrefix (printf "%s%s/" $siteRoot $lang) }}
       {{- if in $repoRels $rel }}{{ continue }}{{ end }}
       {{- $doc := partial "docs/parse.html" .Content }}
+      {{- $description := $doc.fm.description | default (printf "%s · %s — %s" $doc.title $proj.name (index $proj.summary $lang | default (index $proj.summary "en"))) | plainify | truncate 160 }}
       {{- $.AddPage (dict
         "path" (path.Join $proj.slug (strings.TrimSuffix ".md" $rel))
         "sites" (dict "matrix" (dict "languages" (slice $lang)))
         "title" (printf "%s · %s" $doc.title $proj.name)
         "linkTitle" $doc.title
+        "description" $description
         "weight" (cond (isset $doc.fm "weight") $doc.fm.weight 500)
         "content" (dict "mediaType" "text/markdown" "value" $doc.body)
         "params" (dict
-          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main")
+          "description" $description
+          "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main") "docsRef" $ref "docsVersion" $version
           "docsSource" $rel "docsOrigin" "site" "docsFile" (printf "docs-site/%s/%s/%s" $proj.slug $lang $rel)
           "docsTranslated" false "docsSiteOnly" true
           "showTableOfContents" true)

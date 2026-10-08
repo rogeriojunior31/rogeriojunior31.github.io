@@ -22,7 +22,7 @@ New project: `hugo new content projects/<name>/index.pt-br.md`.
 
 ## Docs
 
-`/docs/` publishes the `docs/` folder of each project's repository. The docs are written once, in the repository; the site pulls them as a Hugo Module.
+`/docs/` lists project documentation. It publishes Markdown from each repository's `docs/` folder via Hugo Modules, or links to an existing documentation website.
 
 | What | Where |
 |---|---|
@@ -32,6 +32,19 @@ New project: `hugo new content projects/<name>/index.pt-br.md`.
 | Site layer: translations and site-only pages | `docs-site/<slug>/<lang>/` |
 | Layout, sidebar, hub | `layouts/docs/`, `layouts/partials/docs/` |
 | Links and images written for GitHub | `layouts/docs/_markup/render-link.html`, `render-image.html` |
+
+For an existing docs website (MkDocs, Docusaurus, etc.), add an entry to `data/docs.yaml` with an absolute HTTPS `url`. No module import or generated local pages are needed. `repo` is optional for external entries, and the English summary is used when the visitor's language has no summary:
+
+```yaml
+- slug: my-project
+  name: My project
+  url: https://example.org/docs/
+  summary:
+    pt-br: "Documentação do projeto."
+    en: "Project documentation."
+```
+
+Imported projects require `docs/README.md`; a missing index fails the build instead of silently hiding the project. Pages and cards show the resolved module version. Source links, fallback images and repository references use that version (or its commit for a Go pseudo-version); editing links still use the working branch. Local module replacements use the working branch and do not display a released version.
 
 Rules for a repository's `docs/`: plain GitHub Markdown, title = first `# H1`, `docs/README.md` is the project page and its link order is the sidebar order, relative links (`guide/x.md`, `../CONTRIBUTING.md`), images in `docs/assets/`. `docs/dev/` is not published.
 
@@ -48,11 +61,13 @@ Translations: each one records `<!-- source: <mark> -->` under its title (invisi
 
 1. A project's PR changes `docs/` with the feature. Its `.github/workflows/docs.yml` calls `project-docs.yml` (in this repo), which checks that every page starts with `# H1` and that relative links exist.
 2. The project tags a release (`vX.Y.Z`). The same workflow sends a `docs-release` dispatch to this repo (secret `SITE_DISPATCH_TOKEN` in the project: a fine-grained token for this repository only, Contents read and write).
-3. `deploy.yml` runs; `scripts/docs-latest.sh` moves every project in `data/docs.yaml` to its latest release, and the site is live about two minutes after the tag. Without the token, the daily scheduled deploy picks the release up.
+3. `deploy.yml` runs; `scripts/docs-latest.sh` updates imported projects in `data/docs.yaml`, and the site is published after validation. External documentation entries are skipped. Without the token, the daily scheduled deploy picks the update up.
 
-Docs on `main` that are not released yet do not show up: the site documents the version people install.
+Go's `@latest` resolution is used: stable semantic versions take precedence; repositories without release tags may resolve to a commit. The displayed version always comes from the resolved module.
 
-Add a project: an `[[imports]]` block in `module.toml`, an entry in `data/docs.yaml`, `scripts/docs-latest.sh`, and the caller workflow in the project (see the header of `.github/workflows/project-docs.yml`).
+Add an imported project: an `[[imports]]` block in `module.toml`, an entry in `data/docs.yaml`, and the caller workflow in the project (see the header of `.github/workflows/project-docs.yml`). `scripts/docs-latest.sh` discovers registered module imports automatically.
+
+PR builds use pinned `go.mod`/`go.sum` versions. Deploys explicitly enable `update_docs` and keep automatic updates. To reproduce a deployed docs version locally, pin the version shown on its page with `hugo mod get github.com/<owner>/<repo>@<version>`.
 
 Preview docs that are not pushed yet:
 
@@ -80,3 +95,5 @@ Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 - Dependabot keeps the actions and Blowfish up to date
 
 Requires Settings → Pages → Source set to **GitHub Actions**.
+
+Local docs regression checks: `python scripts/check-docs.py` (Python standard library only). Builds both languages, checks local links/assets, metadata and version links, and exercises external docs plus invalid configurations in a temporary copy.

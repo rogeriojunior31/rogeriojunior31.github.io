@@ -1,5 +1,6 @@
 # Projetos com documentação em /docs/. Cada um precisa de um import em config/_default/module.toml
 # montando o docs/ do repositório em assets/docs/<slug>/.
+# Para um site de docs externo, adicione url: "https://..."; não precisa de import.
 - slug: lazyagents
   name: lazyagents
   repo: rogeriojunior31/lazyagents

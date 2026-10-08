@@ -7,6 +7,13 @@
 </div>
 <script>
 (() => {
+  const docsNav = document.querySelector("[data-docs-nav]");
+  if (docsNav) {
+    const mobile = matchMedia("(max-width: 899px)");
+    const updateNav = () => { docsNav.open = !mobile.matches; };
+    updateNav();
+    mobile.addEventListener("change", updateNav);
+  }
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -50,7 +57,7 @@
   // Títulos digitados, exceto em páginas com terminal no conteúdo (o aviso de cookies do rodapé não conta).
   // Na home, a linha do cargo (h2 logo após o nome) é digitada em seguida.
   const h1 = document.querySelector("#main-content h1");
-  if (h1 && !document.querySelector("#main-content [data-term]") && h1.children.length === 0) {
+  if (h1 && !document.querySelector(".docs-layout, .docs-hub, #main-content [data-term]") && h1.children.length === 0) {
     const next = h1.parentElement?.tagName === "HEADER" ? h1.nextElementSibling : null;
     const sub = next?.tagName === "H2" && next.children.length === 0 ? next : null;
     if (sub) sub.style.visibility = "hidden";

@@ -8,7 +8,7 @@
   {{- with resources.Get (printf "docs/%s/%s" $p.Params.docsProject $joined) -}}
     {{- $src = .RelPermalink -}}
   {{- else -}}
-    {{- $src = printf "https://raw.githubusercontent.com/%s/%s/%s" $p.Params.docsRepo $p.Params.docsBranch (strings.TrimPrefix "../" (path.Join "docs" $joined)) -}}
+    {{- $src = printf "https://raw.githubusercontent.com/%s/%s/%s" $p.Params.docsRepo $p.Params.docsRef (strings.TrimPrefix "../" (path.Join "docs" $joined)) -}}
   {{- end -}}
 {{- end -}}
 <img class="my-0 rounded-md" loading="lazy" decoding="async" src="{{ $src }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }}>

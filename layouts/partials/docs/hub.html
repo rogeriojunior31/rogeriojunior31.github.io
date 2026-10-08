@@ -7,11 +7,19 @@
   <div class="docs-cards">
     {{ range hugo.Data.docs }}
       {{ $d := . }}
-      {{ with site.GetPage (printf "/docs/%s" .slug) }}
-        <a class="docs-card" href="{{ .RelPermalink }}">
+      {{ $page := site.GetPage (printf "/docs/%s" .slug) }}
+      {{ $href := "" }}
+      {{ with $page }}{{ $href = .RelPermalink }}{{ end }}
+      {{ with .url }}
+        {{ $u := urls.Parse . }}
+        {{ if not (and (eq $u.Scheme "https") $u.Host) }}{{ errorf "Docs %s: url deve ser uma URL HTTPS absoluta" $d.slug }}{{ end }}
+        {{ $href = . }}
+      {{ end }}
+      {{ with $href }}
+        <a class="docs-card" href="{{ . }}">
           <span class="docs-card-name">~/docs/{{ $d.name }}</span>
-          <span class="docs-card-summary">{{ index $d.summary $lang }}</span>
-          <span class="docs-card-meta">github.com/{{ .Params.docsRepo }} · {{ len .RegularPagesRecursive }} {{ cond (eq $lang "en") "pages" "páginas" }}</span>
+          <span class="docs-card-summary">{{ index $d.summary $lang | default (index $d.summary "en") }}</span>
+          <span class="docs-card-meta">{{ if $d.url }}{{ cond (eq $lang "en") "External documentation ↗" "Documentação externa ↗" }}{{ else }}{{ with $page.Params.docsVersion }}{{ . }} · {{ end }}{{ len $page.RegularPagesRecursive }} {{ cond (eq $lang "en") "pages" "páginas" }}{{ end }}</span>
         </a>
       {{ end }}
     {{ end }}
