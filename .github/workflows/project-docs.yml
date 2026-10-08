@@ -58,6 +58,8 @@ jobs:
         run: |
           python3 - <<'PY'
           import json
+          import hashlib
+          import re
           from pathlib import Path
           path = Path("docs/site.json")
           if path.exists():
@@ -67,6 +69,20 @@ jobs:
               summary = data.get("summary", {})
               for lang in ("en", "pt-br"):
                   assert isinstance(summary.get(lang), str) and summary[lang].strip(), f"docs/site.json requires summary.{lang}"
+              required = data.get("requiredTranslations", [])
+              assert isinstance(required, list), "requiredTranslations must be a list"
+              for lang in required:
+                  assert lang in summary and lang != "en", f"invalid required translation language: {lang}"
+              originals = [p for p in Path("docs").rglob("*.md") if p.relative_to("docs").parts[0] not in {*summary, "dev"}]
+              for original in originals:
+                  current = hashlib.sha256(original.read_bytes()).hexdigest()[:12]
+                  for lang in required:
+                      translation = Path("docs") / lang / original.relative_to("docs")
+                      assert translation.is_file(), f"missing required translation: {translation}"
+                      mark = re.search(r"<!--\s*source:\s*([0-9a-f]{12})\s*-->", translation.read_text())
+                      assert mark and mark[1] == current, f"review {translation} against {original} (source: {current})"
+              if required:
+                  print(f"OK: {len(originals)} current translations per required language: {required}")
               print("OK: website metadata in English and Brazilian Portuguese")
           else:
               print("Legacy docs: metadata comes from the website registry")

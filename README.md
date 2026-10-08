@@ -52,6 +52,7 @@ Projects may own their display metadata in `docs/site.json`. The website reads i
 {
   "schema": 1,
   "name": "My project",
+  "requiredTranslations": ["pt-br"],
   "summary": {
     "en": "Project documentation.",
     "pt-br": "Documentação do projeto."
@@ -60,6 +61,8 @@ Projects may own their display metadata in `docs/site.json`. The website reads i
 ```
 
 Each configured website language needs a summary. Translations are detected by corresponding Markdown paths, not declared complete in the metadata. A translated index alone does not translate its linked pages. Check `/docs/traducoes/` for missing or outdated translations; source marks must only be refreshed after reviewing the translation.
+
+To require complete translations, add `"requiredTranslations": ["pt-br"]` to the project's `docs/site.json`. Every public original must then have a reviewed translation with the current source mark; missing, unmarked or outdated translations fail the shared workflow and website build. The lazyagents project also enforces this contract in `go test ./docs`. Do not stamp a new hash on an unreviewed translation. HTML `id` anchors preserve section links in both the repository and the generated website.
 
 Rules for a repository's `docs/`: plain GitHub Markdown, title = first `# H1`, `docs/README.md` is the project page and its link order is the sidebar order, relative links (`guide/x.md`, `../CONTRIBUTING.md`), images in `docs/assets/`. `docs/dev/` is not published.
 
@@ -122,3 +125,5 @@ Requires Settings → Pages → Source set to **GitHub Actions**.
 Local docs regression checks: `python scripts/check-docs.py` (Python standard library only). Builds both languages, checks local links/assets, metadata and version links, and exercises external docs plus invalid configurations in a temporary copy.
 
 Optional browser checks against a running preview: `uv run --with playwright python scripts/check-search-browser.py http://localhost:1313` (install Chromium first with `uv run --with playwright playwright install chromium`). Covers both languages at four viewport widths, reading links, search input changes, a delayed search index and print visibility.
+
+Complete lazyagents language checks: `python3 scripts/check-docs-language.py public` or `python3 scripts/check-docs-language.py https://rogeriojunior31.github.io`. Checks every public English doc and its Portuguese counterpart, rejecting English fallback, stale translations, identical untranslated bodies and duplicate HTML anchors. CI checks the built artifact before publication.

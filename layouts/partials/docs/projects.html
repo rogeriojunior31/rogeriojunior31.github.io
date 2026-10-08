@@ -14,7 +14,12 @@
           {{- errorf "Docs %s: site.json exige summary.%s" $project.slug .Language.Lang -}}
         {{- end -}}
       {{- end -}}
-      {{- $project = merge $project (dict "name" $meta.name "summary" $meta.summary) -}}
+      {{- $required := $meta.requiredTranslations | default slice -}}
+      {{- $languages := slice -}}{{- range hugo.Sites }}{{ $languages = $languages | append .Language.Lang }}{{ end -}}
+      {{- range $required -}}
+        {{- if or (eq . "en") (not (in $languages .)) -}}{{ errorf "Docs %s: requiredTranslations contém idioma inválido %s" $project.slug . }}{{- end -}}
+      {{- end -}}
+      {{- $project = merge $project (dict "name" $meta.name "summary" $meta.summary "requiredTranslations" $required) -}}
     {{- end -}}
   {{- end -}}
   {{- $projects = $projects | append $project -}}

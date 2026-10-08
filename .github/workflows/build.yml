@@ -51,6 +51,9 @@ jobs:
       - name: Build
         run: hugo --gc --minify --panicOnWarning
 
+      - name: Complete Portuguese documentation
+        run: python3 scripts/check-docs-language.py public
+
       - name: Check internal links
         uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
         with:

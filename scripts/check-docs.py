@@ -9,6 +9,7 @@ import subprocess
 import re
 import os
 import json
+import hashlib
 
 
 class HTML(HTMLParser):
@@ -226,3 +227,24 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     metadata.write_text(json.dumps({"schema": 2, "name": "Invalid", "summary": {"en": "English", "pt-br": "Portuguese"}}))
     assert "schema 1" in build(source, temp / "invalid-schema", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
     print("OK: versioned project metadata in both languages; missing summaries and unsupported schema fail the build")
+
+    required = {"schema": 1, "name": "Strict translations", "summary": {"en": "English", "pt-br": "Portuguese"}, "requiredTranslations": ["pt-br"]}
+    metadata.write_text(json.dumps(required))
+    preview_env = os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"}
+    assert "tradução obrigatória" in build(source, temp / "missing-translation", succeeds=False, env=preview_env)
+    for original in (local / "docs").rglob("*.md"):
+        rel = original.relative_to(local / "docs")
+        if rel.parts[0] == "pt-br":
+            continue
+        translation = local / "docs/pt-br" / rel
+        translation.parent.mkdir(parents=True, exist_ok=True)
+        content = translation.read_text() if translation.exists() else original.read_text().replace("# Local preview", "# Prévia local").replace("# Guide index", "# Índice de guias")
+        mark = hashlib.sha256(original.read_bytes()).hexdigest()[:12]
+        translation.write_text(f"<!-- source: {mark} -->\n" + content)
+    strict_output = temp / "strict"
+    build(source, strict_output, env=preview_env)
+    check_fragments(strict_output)
+    translation = local / "docs/pt-br/guide/topic.md"
+    translation.write_text(translation.read_text().replace(hashlib.sha256((local / "docs/guide/topic.md").read_bytes()).hexdigest()[:12], "000000000000"))
+    assert "stale" in build(source, temp / "stale-translation", succeeds=False, env=preview_env)
+    print("OK: strict translation coverage accepts reviewed docs and rejects missing or stale translations")

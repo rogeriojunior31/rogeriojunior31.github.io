@@ -83,6 +83,9 @@
         {{- if $translated }}
           {{- $tstate = cond (eq $doc.source $hash) "ok" (cond (ne $doc.source "") "stale" "unmarked") }}
         {{- end }}
+        {{- if and (in ($proj.requiredTranslations | default slice) $lang) (ne $tstate "ok") -}}
+          {{- errorf "Docs %s: tradução obrigatória %s/%s está %s; traduza e revise o original antes de publicar" $proj.slug $lang $rel $tstate -}}
+        {{- end -}}
         {{- $status = $status | append (dict "lang" $lang "proj" $proj.name "slug" $proj.slug "path" (path.Join $proj.slug $p) "rel" $rel "file" $file "state" $tstate "hash" $hash "title" $orig.title "translations" ($proj.translations | default "repo") "repo" $proj.repo) }}
       {{- end }}
       {{- $description := $doc.fm.description | default (printf "%s · %s — %s" $doc.title $proj.name (index $proj.summary $lang | default (index $proj.summary "en"))) | plainify | truncate 160 }}
