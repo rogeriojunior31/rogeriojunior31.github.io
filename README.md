@@ -48,6 +48,8 @@ Imported projects require `docs/README.md`; a missing index fails the build inst
 
 Rules for a repository's `docs/`: plain GitHub Markdown, title = first `# H1`, `docs/README.md` is the project page and its link order is the sidebar order, relative links (`guide/x.md`, `../CONTRIBUTING.md`), images in `docs/assets/`. `docs/dev/` is not published.
 
+Nested indexes such as `docs/guide/README.md` become sections and appear in the sidebar with their child pages. Root-relative site URLs (`/projects/`) and protocol-relative CDN URLs (`//example.org/...`) are preserved; relative links and images retain query parameters and fragments.
+
 Site layer (`docs-site/<slug>/<lang>/`, written here, not in the project repo):
 - a file with the same path as a repository page translates that page for `<lang>` (e.g. `docs-site/lazyagents/pt-br/README.md`); the page links back to the English original;
 - any other path is a page that exists only on the site, in that language (e.g. `visao-geral.md`);

@@ -102,7 +102,14 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     local = temp / "local-module"
     (local / "docs").mkdir(parents=True)
     (local / "go.mod").write_text("module github.com/rogeriojunior31/lazyagents\n\ngo 1.27.1\n")
-    (local / "docs/README.md").write_text("# Local preview\n\nUnreleased documentation.\n")
+    (local / "docs/README.md").write_text("# Local preview\n\nUnreleased documentation.\n\n[Guides](guide/README.md)\n\n[Site projects](/projects/)\n\n[CDN docs](//example.org/docs/)\n\n[Download](assets/sample.svg?download=1#icon)\n\n![Site icon](/favicon-32x32.png)\n\n![CDN icon](//example.org/icon.png)\n")
+    (local / "docs/guide").mkdir()
+    (local / "docs/guide/README.md").write_text("# Guide index\n\n[Topic](topic.md#details)\n")
+    (local / "docs/guide/topic.md").write_text("# Guide topic\n\n## Details\n\nContent.\n")
+    (local / "docs/assets").mkdir()
+    (local / "docs/assets/sample.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" id="icon" viewBox="0 0 1 1"></svg>')
+    with (local / "docs/README.md").open("a") as fixture:
+        fixture.write("\n![Local asset](assets/sample.svg?color=orange#icon)\n")
     preview = temp / "preview"
     build(source, preview, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
     page = (preview / "docs/lazyagents/index.html").read_text()
@@ -110,3 +117,16 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     assert "/blob/main/docs/README.md" in page
     assert "/blob/v0.4.3/docs/README.md" not in page
     print("OK: local module previews do not claim a released version")
+    for lang in ("", "en/"):
+        page = HTML((preview / lang / "docs/lazyagents/index.html").read_text())
+        links = [attrs["href"] for tag, attrs in page.tags if tag == "a"]
+        images = [attrs["src"] for tag, attrs in page.tags if tag == "img"]
+        assert "/projects/" in links and "//example.org/docs/" in links
+        assert "/favicon-32x32.png" in images and "//example.org/icon.png" in images
+        assert any(url.endswith("sample.svg?download=1#icon") for url in links)
+        assert any(url.endswith("sample.svg?color=orange#icon") for url in images)
+        assert f"/{lang}docs/lazyagents/guide/" in links
+        assert f"/{lang}docs/lazyagents/guide/topic/" in links
+        guide = HTML((preview / lang / "docs/lazyagents/guide/index.html").read_text())
+        assert any(attrs.get("href") == f"/{lang}docs/lazyagents/guide/topic/#details" for _, attrs in guide.tags)
+    print("OK: nested README indexes, sidebar children, absolute/CDN URLs and asset query/fragment")

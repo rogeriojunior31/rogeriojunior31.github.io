@@ -2,7 +2,7 @@
 {{- $p := .Page -}}
 {{- $u := urls.Parse .Destination -}}
 {{- $src := .Destination -}}
-{{- if and (not $u.IsAbs) $p.Params.docsProject -}}
+{{- if and (not $u.IsAbs) (not (strings.HasPrefix .Destination "/")) $u.Path $p.Params.docsProject -}}
   {{- $joined := path.Clean (path.Join (path.Dir ($p.Params.docsLinkBase | default $p.Params.docsSource)) $u.Path) -}}
   {{- range hugo.Sites }}{{ with .Language.Name }}{{ if ne . "en" }}{{ $joined = strings.TrimPrefix (printf "%s/" .) $joined }}{{ end }}{{ end }}{{ end -}}
   {{- with resources.Get (printf "docs/%s/%s" $p.Params.docsProject $joined) -}}
@@ -10,6 +10,8 @@
   {{- else -}}
     {{- $src = printf "https://raw.githubusercontent.com/%s/%s/%s" $p.Params.docsRepo $p.Params.docsRef (strings.TrimPrefix "../" (path.Join "docs" $joined)) -}}
   {{- end -}}
+  {{- with $u.RawQuery }}{{ $src = printf "%s?%s" $src . }}{{ end -}}
+  {{- with $u.Fragment }}{{ $src = printf "%s#%s" $src . }}{{ end -}}
 {{- end -}}
 <img class="my-0 rounded-md" loading="lazy" decoding="async" src="{{ $src }}" alt="{{ .Text }}" {{ with .Title }}title="{{ . }}"{{ end }}>
 {{- /* Trim EOF */ -}}

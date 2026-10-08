@@ -3,7 +3,8 @@
 {{- $cur := .current -}}
 {{- $groups := dict -}}
 {{- $top := slice -}}
-{{- range $root.RegularPagesRecursive.ByWeight -}}
+{{- range (where $root.Site.Pages "Params.docsProject" $root.Params.docsProject).ByWeight -}}
+  {{- if eq . $root }}{{ continue }}{{ end -}}
   {{- $dir := path.Dir .Params.docsSource -}}
   {{- if eq $dir "." -}}
     {{- $top = $top | append . -}}

@@ -56,7 +56,7 @@
     {{- $p := strings.TrimSuffix ".md" $rel }}
     {{- $kind := "page" }}
     {{- if eq $rel "README.md" }}{{ $p = "" }}{{ $kind = "section" }}
-    {{- else if eq (path.Base $rel) "README.md" }}{{ $p = path.Dir $rel }}{{ end }}
+    {{- else if eq (path.Base $rel) "README.md" }}{{ $p = path.Dir $rel }}{{ $kind = "section" }}{{ end }}
     {{- $weight := 1000 }}
     {{- range $i, $o := $order }}{{ if and (eq $o $rel) (eq $weight 1000) }}{{ $weight = mul (add $i 1) 10 }}{{ end }}{{ end }}
     {{- $origRaw := (resources.Get (printf "%s%s" $root $rel)).Content }}
@@ -90,7 +90,7 @@
         "path" (path.Join $proj.slug $p)
         "sites" (dict "matrix" (dict "languages" (slice $lang)))
         "kind" $kind
-        "title" (cond (eq $kind "section") $doc.title (printf "%s · %s" $doc.title $proj.name))
+        "title" (cond (eq $rel "README.md") $doc.title (printf "%s · %s" $doc.title $proj.name))
         "linkTitle" $doc.title
         "description" $description
         "weight" (cond (isset $doc.fm "weight") $doc.fm.weight $weight)
