@@ -65,6 +65,9 @@ def check_site(output):
                 assert target.exists(), f"{file}: missing {attrs[attr]}"
         if any("docs-layout" in attrs.get("class", "").split() for _, attrs in html.tags):
             assert any(tag == "details" and "data-docs-nav" in attrs for tag, attrs in html.tags), file
+            locale = next(attrs["lang"] for tag, attrs in html.tags if tag == "html")
+            breadcrumb = next(attrs for tag, attrs in html.tags if tag == "nav" and attrs.get("class") == "docs-crumbs")
+            assert breadcrumb["aria-label"] == ("Breadcrumb" if locale == "en" else "Caminho da página"), file
             description = next(attrs["content"] for tag, attrs in html.tags if tag == "meta" and attrs.get("name") == "description")
             assert not description.startswith(("Site pessoal", "Personal site")), file
     graph = subprocess.check_output(["hugo", "mod", "graph"], cwd=root, text=True)

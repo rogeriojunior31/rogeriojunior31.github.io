@@ -15,10 +15,11 @@
   </aside>
 
   <article class="docs-main min-w-0">
-    <nav class="docs-crumbs" aria-label="breadcrumb">
+    <nav class="docs-crumbs" aria-label="{{ cond $en "Breadcrumb" "Caminho da página" }}">
       <a href="{{ (site.GetPage "/docs").RelPermalink }}">docs</a>
-      <span>/</span><a href="{{ $root.RelPermalink }}">{{ $proj }}</a>
-      {{ with path.Dir .Params.docsSource }}{{ if ne . "." }}<span>/</span><span>{{ . }}</span>{{ end }}{{ end }}
+      <span aria-hidden="true">/</span><a href="{{ $root.RelPermalink }}" {{ if eq . $root }}aria-current="page"{{ end }}>{{ $proj }}</a>
+      {{ with path.Dir .Params.docsSource }}{{ if ne . "." }}<span aria-hidden="true">/</span><span>{{ . }}</span>{{ end }}{{ end }}
+      {{ if ne . $root }}<span aria-hidden="true">/</span><span lang="{{ $contentLang }}" aria-current="page">{{ .LinkTitle }}</span>{{ end }}
     </nav>
     <h1 id="{{ .Params.docsTitleAnchor | default (.LinkTitle | anchorize) }}" lang="{{ $contentLang }}" class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .LinkTitle }}</h1>
     {{ with .Params.docsVersion }}<p class="docs-version">{{ cond $en "Documented version" "Versão documentada" }}: {{ . }}</p>{{ end }}

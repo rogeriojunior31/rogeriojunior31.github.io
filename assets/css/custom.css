@@ -139,10 +139,6 @@ h1 { letter-spacing: -0.02em; }
 .tmux-bar { overflow: hidden; }
 @media (max-width: 639px) { .tmux-win { display: none; } }
 
-@media (prefers-reduced-motion: reduce) {
-  .term-caret { animation: none; }
-}
-
 /* Seleção de texto e links no tom da paleta. */
 ::selection { background: var(--sp-vidro); color: var(--sp-fg-vivo); }
 
@@ -203,8 +199,9 @@ body:has(.docs-layout) header > .min-h-\[148px\] { min-height: 96px; }
 .docs-main .article-content { max-width: 52rem; }
 .docs-main .article-content pre { padding: 1rem 1.25rem; }
 .docs-main .toc { min-width: 15rem; }
-.docs-main h1 { margin-bottom: .5rem; scroll-margin-top: 7rem; }
-.docs-crumbs { display: flex; gap: .5rem; margin-bottom: 1rem; font-family: var(--font-mono); font-size: .85rem; color: var(--sp-fg-muted); }
+.docs-main :is(h1, h2, h3, h4) { overflow-wrap: anywhere; }
+.docs-main h1 { margin-bottom: .5rem; scroll-margin-top: 7rem; font-size: clamp(1.75rem, 5vw, 2.25rem); }
+.docs-crumbs { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; font-family: var(--font-mono); font-size: .85rem; color: var(--sp-fg-muted); }
 .docs-crumbs a { color: var(--sp-marginal); text-decoration: none; }
 .docs-lang-note { margin-top: 1rem; max-width: 52rem; padding: .7rem 1rem; border-left: 3px solid var(--sp-taxi); border-radius: 0 .4rem .4rem 0; background: var(--sp-vao); color: var(--sp-fg-dim); font-size: .9rem; }
 .docs-stale { border-left-color: var(--sp-brasa); }
@@ -214,4 +211,22 @@ body:has(.docs-layout) header > .min-h-\[148px\] { min-height: 96px; }
 @media (max-width: 899px) {
   .docs-layout { grid-template-columns: 1fr; gap: 1rem; }
   .docs-nav { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--sp-fiacao); padding: 0 0 .75rem; }
+  .docs-nav li a { min-height: 44px; display: flex; align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .term-caret, .term-in { animation: none; }
+  .docs-card { transition: none; }
+  .docs-card:hover { transform: none; }
+}
+
+@media print {
+  .docs-layout, .docs-main > section { display: block; }
+  .docs-main h1, .docs-version, .docs-lang-note { color: #111 !important; }
+  .docs-lang-note { background: transparent; border-left-color: #777; }
+  .docs-main .article-content { max-width: none; }
+  .docs-main table { display: table; table-layout: fixed; width: 100%; overflow: visible; }
+  .docs-main table :is(th, td) { overflow-wrap: anywhere; }
+  .docs-main table td:first-child { white-space: normal; }
 }

@@ -52,6 +52,8 @@ Nested indexes such as `docs/guide/README.md` become sections and appear in the 
 
 Docs titles have stable anchors based on the original English title, including translated pages. When translating other headings, preserve linked anchors with explicit IDs, e.g. `## Detalhes {#details}` for `## Details`. Content declares its actual language for screen readers. Regression checks also validate local HTML fragments in docs.
 
+Docs use wrapping headings and larger sidebar touch targets on mobile. Print styles expand the content to the available width and wrap table cells. Reduced-motion preferences disable card movement and smooth scrolling.
+
 Site layer (`docs-site/<slug>/<lang>/`, written here, not in the project repo):
 - a file with the same path as a repository page translates that page for `<lang>` (e.g. `docs-site/lazyagents/pt-br/README.md`); the page links back to the English original;
 - any other path is a page that exists only on the site, in that language (e.g. `visao-geral.md`);
