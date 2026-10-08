@@ -10,6 +10,35 @@ with sync_playwright() as p:
         for lang in ('', 'en/'):
             page = browser.new_page(viewport={'width': width, 'height': 900}, reduced_motion='reduce')
             page.on('pageerror', lambda error: errors.append(str(error)))
+            for path in ('', 'projects/', 'projects/house-price-predictor/', 'projects/gemma-lora/', 'resume/', 'docs/'):
+                response = page.goto(base + '/' + lang + path)
+                assert response.ok
+                assert page.locator('html').get_attribute('lang') == ('en' if lang else 'pt-BR')
+                assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), (width, lang, path)
+                assert page.locator('h1').count() > 0
+            page.goto(base + '/' + lang)
+            assert page.locator('a[href="/' + lang + 'projects/lazyagents/"]').count() > 0
+            page.keyboard.press('Tab')
+            assert page.evaluate('document.activeElement.matches("a, button, input, summary")')
+            page.locator('a[href$="#cookies"]').click()
+            expect(page.locator('[data-consent-box]')).to_be_visible()
+            page.locator('[data-consent="denied"]').focus()
+            page.keyboard.press('Enter')
+            expect(page.locator('[data-consent-box]')).to_be_hidden()
+            assert page.evaluate('localStorage.getItem("analytics-consent")') == 'denied'
+            assert page.locator('script[src*="googletagmanager"]').count() == 0
+            if width < 768:
+                toggle = page.locator('label[for="mobile-menu-toggle"]').first
+                toggle.focus()
+                page.keyboard.press('Enter')
+                expect(page.locator('#mobile-menu-dialog')).to_be_visible()
+                page.locator('#mobile-menu-dialog a[href="/' + lang + 'projects/"]').click()
+                assert page.url.endswith('/' + lang + 'projects/')
+            page.close()
+    for width in (320, 390, 1024, 1440):
+        for lang in ('', 'en/'):
+            page = browser.new_page(viewport={'width': width, 'height': 900}, reduced_motion='reduce')
+            page.on('pageerror', lambda error: errors.append(str(error)))
             page.goto(base + '/' + lang + 'docs/lazyagents/')
             pager = page.locator('.docs-pagination')
             assert pager.locator('[rel=prev]').count() == 0
@@ -46,4 +75,4 @@ with sync_playwright() as p:
     expect(page.locator('#search-results li')).to_have_count(0)
     assert not errors, errors
     browser.close()
-print('Browser checks passed: both languages, four widths, reading links, external/internal search, print, delayed index and clearing.')
+print('Browser checks passed: home/projects/resume/docs, keyboard/cookies, both languages, four widths, reading links, search, print, delayed index and clearing.')

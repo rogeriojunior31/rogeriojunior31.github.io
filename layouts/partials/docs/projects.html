@@ -2,6 +2,17 @@
 {{- $projects := slice -}}
 {{- range hugo.Data.docs -}}
   {{- $project := . -}}
+  {{- if .url -}}
+    {{- $urls := merge (dict "fallback" .url) (.urls | default dict) -}}
+    {{- range $language, $url := $urls -}}
+      {{- $parsed := urls.Parse $url -}}
+      {{- if not (and (eq $parsed.Scheme "https") $parsed.Host) -}}{{ errorf "Docs %s: url deve ser uma URL HTTPS absoluta (%s)" $project.slug $language }}{{- end -}}
+    {{- end -}}
+    {{- $localized := index $urls site.Language.Lang -}}
+    {{- $language := .urlLanguage | default "unknown" -}}
+    {{- if $localized }}{{ $language = site.Language.Lang }}{{ end -}}
+    {{- $project = merge $project (dict "url" ($localized | default .url) "urlLanguage" $language) -}}
+  {{- end -}}
   {{- if not .url -}}
     {{- with resources.Get (printf "docs/%s/site.json" .slug) -}}
       {{- $meta := .Content | transform.Unmarshal -}}

@@ -1,6 +1,8 @@
 # Projetos com documentação em /docs/. Cada um precisa de um import em config/_default/module.toml
 # montando o docs/ do repositório em assets/docs/<slug>/.
 # Para um site de docs externo, adicione url: "https://..."; não precisa de import.
+# urlLanguage informa o idioma da URL padrão. urls: {pt-br: "https://...", en: "https://..."}
+# seleciona traduções disponíveis; sem tradução, usa url e informa seu idioma.
 - slug: lazyagents
   name: lazyagents
   repo: rogeriojunior31/lazyagents
@@ -14,6 +16,7 @@
   name: SP Night
   repo: sp-night/sp-night.github.io
   url: https://sp-night.github.io/ports/
+  urlLanguage: en
   summary:
     pt-br: "Guias de instalação dos ports do tema SP Night para terminais e editores."
     en: "Installation guides for SP Night theme ports for terminals and editors."

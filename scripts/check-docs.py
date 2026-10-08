@@ -152,6 +152,18 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
         assert not (external / lang / "docs/external-test").exists()
     print("OK: external docs in both languages, summary fallback, no local pages")
 
+    registry.write_text(registry.read_text() + '\n  urlLanguage: en\n  urls:\n    pt-br: https://example.org/pt/docs/\n    en: https://example.org/en/docs/\n')
+    build(source, external)
+    for lang, url, label in (("", "https://example.org/pt/docs/", "Português"), ("en/", "https://example.org/en/docs/", "English")):
+        hub = (external / lang / "docs/index.html").read_text()
+        assert url in hub and label in hub
+        search = json.loads((external / lang / "index.json").read_text())
+        assert any(entry.get("externalUrl") == url for entry in search)
+    registry.write_text(registry.read_text().replace("https://example.org/en/docs/", "javascript:alert(1)"))
+    assert "URL HTTPS absoluta" in build(source, temp / "invalid-locale", succeeds=False)
+    registry.write_text(original + '\n- slug: external-test\n  name: External test\n  repo: example/external-test\n  url: https://example.org/docs/\n  summary:\n    en: "External summary fallback"\n')
+    print("OK: localized external URLs in hub/search; invalid translations rejected")
+
     # Test the updater without network access or changes to real module versions.
     mock_bin = temp / "bin"
     mock_bin.mkdir()
