@@ -113,7 +113,7 @@ Posts are hidden until the first one exists: add `posts` back to the menus.
 
 The home and project pages use `{{< lazyagents >}}` (`placement="home"` on the home); the docs index uses the same `layouts/partials/lazyagents-showcase.html`. Copy is localized in the partial. The official logo is copied from the project's `docs/assets/logo.png` to `assets/img/lazyagents/logo.png`; Hugo generates WebP sizes for the showcase, docs cards and sidebar.
 
-`static/media/lazyagents/demo.mp4` is a silent 25-second edit of the project's `demo.gif` recorded with fictitious data: skills (4–12s), sessions (17–30s), usage (56–60s). It uses H.264, 20 fps and fast start. `poster.webp` is the skills frame at 8s. When updating the recording, review these cut points and the duration label in the partial. Native video controls and `preload="none"` keep playback optional and avoid downloading the video before the visitor plays it.
+`static/media/lazyagents/demo.mp4` is the project's hero demo (`docs/assets/demos/hero.mp4`, recorded by `scripts/record-demo.sh` with fictitious data): a silent 13-second clip that enables a skill in every agent, reads a session as a log and shows the usage limits. It is 1904×1026 (2x), H.264, 30 fps with fast start, without a window frame because the showcase draws its own. `poster.webp` is the frame at 2.8s (the skill enabled in all agents). When updating the recording, review the duration label and aria labels in the partial, the aspect ratio in `custom.css` and the duration check in `scripts/check-search-browser.py`. Native video controls and `preload="none"` keep playback optional and avoid downloading the video before the visitor plays it.
 
 Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 

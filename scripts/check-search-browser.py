@@ -70,7 +70,7 @@ with sync_playwright() as p:
     page.goto(base + '/projects/lazyagents/')
     page.locator('.lazy-demo video').evaluate('(video) => video.play()')
     page.wait_for_function('document.querySelector(".lazy-demo video").currentTime > 0')
-    assert 24 < page.locator('.lazy-demo video').evaluate('(video) => video.duration') < 26
+    assert 12 < page.locator('.lazy-demo video').evaluate('(video) => video.duration') < 14
     page.close()
     page = browser.new_page(reduced_motion='reduce')
     page.on('pageerror', lambda error: errors.append(str(error)))

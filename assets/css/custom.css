@@ -191,7 +191,7 @@ h1 { letter-spacing: -0.02em; }
 .lazy-demo-dots i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--sp-brasa); }
 .lazy-demo-dots i:nth-child(2) { background: var(--sp-taxi); }
 .lazy-demo-dots i:nth-child(3) { background: var(--sp-ibira); }
-.lazy-demo video { display: block; width: 100%; height: auto; aspect-ratio: 1232 / 688; margin: 0; }
+.lazy-demo video { display: block; width: 100%; height: auto; aspect-ratio: 1904 / 1026; margin: 0; }
 .lazy-demo figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; margin: 0; padding: .75rem .85rem; border-top: 1px solid var(--sp-fiacao); color: var(--sp-fg-dim); font-size: .65rem; line-height: 1.5; }
 .lazy-demo figcaption span:first-child { color: var(--sp-sodio); font-family: var(--font-mono); }
 .docs-nav-title a { display: flex; align-items: center; gap: .65rem; }
