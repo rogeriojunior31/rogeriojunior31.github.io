@@ -50,6 +50,8 @@ Rules for a repository's `docs/`: plain GitHub Markdown, title = first `# H1`, `
 
 Nested indexes such as `docs/guide/README.md` become sections and appear in the sidebar with their child pages. Root-relative site URLs (`/projects/`) and protocol-relative CDN URLs (`//example.org/...`) are preserved; relative links and images retain query parameters and fragments.
 
+Docs titles have stable anchors based on the original English title, including translated pages. When translating other headings, preserve linked anchors with explicit IDs, e.g. `## Detalhes {#details}` for `## Details`. Content declares its actual language for screen readers. Regression checks also validate local HTML fragments in docs.
+
 Site layer (`docs-site/<slug>/<lang>/`, written here, not in the project repo):
 - a file with the same path as a repository page translates that page for `<lang>` (e.g. `docs-site/lazyagents/pt-br/README.md`); the page links back to the English original;
 - any other path is a page that exists only on the site, in that language (e.g. `visao-geral.md`);

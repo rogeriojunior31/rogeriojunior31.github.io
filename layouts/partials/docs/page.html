@@ -1,6 +1,7 @@
 {{- $proj := .Params.docsProject -}}
 {{- $root := site.GetPage (printf "/docs/%s" $proj) -}}
 {{- $en := eq site.Language.Lang "en" -}}
+{{- $contentLang := cond (or $en .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" -}}
 {{- $edit := printf "https://github.com/%s/blob/%s/%s" .Params.docsRepo .Params.docsBranch .Params.docsFile -}}
 {{- if eq .Params.docsOrigin "site" }}{{ $edit = printf "https://github.com/rogeriojunior31/rogeriojunior31.github.io/blob/main/%s" .Params.docsFile }}{{ end -}}
 <div class="docs-layout">
@@ -19,7 +20,7 @@
       <span>/</span><a href="{{ $root.RelPermalink }}">{{ $proj }}</a>
       {{ with path.Dir .Params.docsSource }}{{ if ne . "." }}<span>/</span><span>{{ . }}</span>{{ end }}{{ end }}
     </nav>
-    <h1 class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .LinkTitle }}</h1>
+    <h1 id="{{ .Params.docsTitleAnchor | default (.LinkTitle | anchorize) }}" lang="{{ $contentLang }}" class="mt-0 text-4xl font-extrabold text-neutral-900 dark:text-neutral">{{ .LinkTitle }}</h1>
     {{ with .Params.docsVersion }}<p class="docs-version">{{ cond $en "Documented version" "Versão documentada" }}: {{ . }}</p>{{ end }}
     {{ if eq .Params.docsTranslationState "stale" }}
       {{ with index (where .AllTranslations "Language.Lang" "en") 0 }}
@@ -39,7 +40,7 @@
           <div class="toc ps-5 print:hidden lg:sticky lg:top-10">{{ partial "toc.html" . }}</div>
         </div>
       {{ end }}
-      <div class="min-w-0 article-content max-w-prose mb-12">{{ .Content }}</div>
+      <div lang="{{ $contentLang }}" class="min-w-0 article-content max-w-prose mb-12">{{ .Content }}</div>
     </section>
 
     <footer class="docs-foot print:hidden">

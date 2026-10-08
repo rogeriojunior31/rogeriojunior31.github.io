@@ -10,3 +10,10 @@
   summary:
     pt-br: "TUI e CLI em Go para gerenciar skills, sessões, consumo, providers e hooks dos seus agentes de código."
     en: "A Go TUI and CLI to manage your coding agents' skills, sessions, usage, providers and hooks."
+- slug: sp-night
+  name: SP Night
+  repo: sp-night/sp-night.github.io
+  url: https://sp-night.github.io/ports/
+  summary:
+    pt-br: "Guias de instalação dos ports do tema SP Night para terminais e editores."
+    en: "Installation guides for SP Night theme ports for terminals and editors."

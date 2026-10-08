@@ -99,6 +99,7 @@
           "description" $description
           "docsProject" $proj.slug "docsName" $proj.name "docsRepo" $proj.repo "docsBranch" ($proj.branch | default "main") "docsRef" $ref "docsVersion" $version
           "docsSource" $rel "docsLinkBase" $linkBase "docsOrigin" $origin "docsFile" $file
+          "docsTitleAnchor" ($orig.title | anchorize)
           "docsTranslated" $translated "docsTranslationState" $tstate "docsSourceHash" $hash
           "showTableOfContents" true)
       ) }}

@@ -12,5 +12,6 @@ A dark colour scheme with São Paulo as its reference: the sodium street lamp, e
 **Ports:** Alacritty, eza, Ghostty, Helix, herdr and kitty.
 
 {{< button href="https://sp-night.github.io" target="_blank" >}}sp-night.github.io{{< /button >}}
+{{< button href="https://sp-night.github.io/ports/" target="_blank" >}}Installation guides{{< /button >}}
 
 > This site uses the SP Night palette.

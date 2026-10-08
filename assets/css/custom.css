@@ -203,7 +203,7 @@ body:has(.docs-layout) header > .min-h-\[148px\] { min-height: 96px; }
 .docs-main .article-content { max-width: 52rem; }
 .docs-main .article-content pre { padding: 1rem 1.25rem; }
 .docs-main .toc { min-width: 15rem; }
-.docs-main h1 { margin-bottom: .5rem; }
+.docs-main h1 { margin-bottom: .5rem; scroll-margin-top: 7rem; }
 .docs-crumbs { display: flex; gap: .5rem; margin-bottom: 1rem; font-family: var(--font-mono); font-size: .85rem; color: var(--sp-fg-muted); }
 .docs-crumbs a { color: var(--sp-marginal); text-decoration: none; }
 .docs-lang-note { margin-top: 1rem; max-width: 52rem; padding: .7rem 1rem; border-left: 3px solid var(--sp-taxi); border-radius: 0 .4rem .4rem 0; background: var(--sp-vao); color: var(--sp-fg-dim); font-size: .9rem; }

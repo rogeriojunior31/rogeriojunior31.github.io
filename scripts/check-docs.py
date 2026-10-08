@@ -29,6 +29,26 @@ def build(source, output, succeeds=True, env=None):
     return result.stdout + result.stderr
 
 
+def check_fragments(output):
+    documents = {file: HTML(file.read_text()) for file in output.rglob("*.html")}
+    for file, html in documents.items():
+        if "docs" not in file.relative_to(output).parts:
+            continue
+        for tag, attrs in html.tags:
+            url = urlsplit(attrs.get("href", ""))
+            if tag != "a" or not url.fragment or url.fragment == "cookies":
+                continue  # The Cookies link is handled by the consent script.
+            if url.scheme not in ("", "http", "https") or (url.netloc and url.netloc != "rogeriojunior31.github.io"):
+                continue
+            target = file if not url.path else ((output / unquote(url.path).lstrip("/")) if url.path.startswith("/") else (file.parent / unquote(url.path)))
+            if target.is_dir():
+                target /= "index.html"
+            target = target.resolve()
+            if target.suffix == ".html":
+                ids = {attrs.get("id") for _, attrs in documents[target].tags}
+                assert unquote(url.fragment) in ids, f"{file}: missing anchor {attrs['href']}"
+
+
 def check_site(output):
     files = list(output.rglob("*.html"))
     assert files, "No HTML generated"
@@ -57,6 +77,7 @@ def check_site(output):
         assert f"/blob/{ref}/docs/README.md" in project
         assert "/blob/main/docs/README.md" in project, "Editing must still use the working branch"
         assert (output / lang / "docs/lazyagents/guide/skills/index.html").exists()
+    check_fragments(output)
     print(f"OK: {len(files)} HTML files, local links/assets, metadata, versions and navigation")
 
 
@@ -104,12 +125,15 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     (local / "go.mod").write_text("module github.com/rogeriojunior31/lazyagents\n\ngo 1.27.1\n")
     (local / "docs/README.md").write_text("# Local preview\n\nUnreleased documentation.\n\n[Guides](guide/README.md)\n\n[Site projects](/projects/)\n\n[CDN docs](//example.org/docs/)\n\n[Download](assets/sample.svg?download=1#icon)\n\n![Site icon](/favicon-32x32.png)\n\n![CDN icon](//example.org/icon.png)\n")
     (local / "docs/guide").mkdir()
-    (local / "docs/guide/README.md").write_text("# Guide index\n\n[Topic](topic.md#details)\n")
+    (local / "docs/guide/README.md").write_text("# Guide index\n\n[Topic](topic.md#details)\n\n[Topic title](topic.md#guide-topic)\n")
     (local / "docs/guide/topic.md").write_text("# Guide topic\n\n## Details\n\nContent.\n")
     (local / "docs/assets").mkdir()
     (local / "docs/assets/sample.svg").write_text('<svg xmlns="http://www.w3.org/2000/svg" id="icon" viewBox="0 0 1 1"></svg>')
     with (local / "docs/README.md").open("a") as fixture:
-        fixture.write("\n![Local asset](assets/sample.svg?color=orange#icon)\n")
+        fixture.write("\n![Local asset](assets/sample.svg?color=orange#icon)\n\n[Top](README.md#local-preview)\n")
+    (local / "docs/pt-br").mkdir()
+    (local / "docs/pt-br/guide").mkdir()
+    (local / "docs/pt-br/guide/topic.md").write_text("# Tópico traduzido\n\n## Detalhes {#details}\n\nConteúdo em português.\n")
     preview = temp / "preview"
     build(source, preview, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
     page = (preview / "docs/lazyagents/index.html").read_text()
@@ -127,6 +151,13 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
         assert any(url.endswith("sample.svg?color=orange#icon") for url in images)
         assert f"/{lang}docs/lazyagents/guide/" in links
         assert f"/{lang}docs/lazyagents/guide/topic/" in links
+        assert any(tag == "h1" and attrs.get("id") == "local-preview" and attrs.get("lang") == "en" for tag, attrs in page.tags)
+        assert any("article-content" in attrs.get("class", "").split() and attrs.get("lang") == "en" for _, attrs in page.tags)
         guide = HTML((preview / lang / "docs/lazyagents/guide/index.html").read_text())
         assert any(attrs.get("href") == f"/{lang}docs/lazyagents/guide/topic/#details" for _, attrs in guide.tags)
     print("OK: nested README indexes, sidebar children, absolute/CDN URLs and asset query/fragment")
+    translated = HTML((preview / "docs/lazyagents/guide/topic/index.html").read_text())
+    assert any(tag == "h1" and attrs.get("lang") == "pt-BR" and attrs.get("id") == "guide-topic" for tag, attrs in translated.tags)
+    assert any("article-content" in attrs.get("class", "").split() and attrs.get("lang") == "pt-BR" for _, attrs in translated.tags)
+    check_fragments(preview)
+    print("OK: title anchors and explicit content language for originals and translations")

@@ -12,5 +12,6 @@ Um esquema de cores escuro inspirado em São Paulo: a lâmpada de sódio, o conc
 **Ports:** Alacritty, eza, Ghostty, Helix, herdr e kitty.
 
 {{< button href="https://sp-night.github.io" target="_blank" >}}sp-night.github.io{{< /button >}}
+{{< button href="https://sp-night.github.io/ports/" target="_blank" >}}Guias de instalação{{< /button >}}
 
 > Este site usa a paleta do SP Night.
