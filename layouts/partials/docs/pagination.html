@@ -1,0 +1,26 @@
+{{- $cur := . -}}
+{{- $root := .Site.GetPage (printf "/docs/%s" .Params.docsProject) -}}
+{{- $pages := (partial "docs/tree.html" $root).pages -}}
+{{- $en := eq .Site.Language.Lang "en" -}}
+{{- range $i, $page := $pages -}}
+  {{- if ne $page $cur }}{{ continue }}{{ end -}}
+  {{- if lt (len $pages) 2 }}{{ continue }}{{ end -}}
+  <nav class="docs-pagination print:hidden" aria-label="{{ cond $en "Reading navigation" "Navegação de leitura" }}">
+    {{ if gt $i 0 }}
+      {{ with index $pages (sub $i 1) }}
+        <a href="{{ .RelPermalink }}" rel="prev">
+          <span class="docs-pagination-label">← {{ cond $en "Previous" "Anterior" }}</span>
+          <span lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}">{{ .LinkTitle }}</span>
+        </a>
+      {{ end }}
+    {{ end }}
+    {{ if lt (add $i 1) (len $pages) }}
+      {{ with index $pages (add $i 1) }}
+        <a href="{{ .RelPermalink }}" rel="next" class="docs-pagination-next">
+          <span class="docs-pagination-label">{{ cond $en "Next" "Próxima" }} →</span>
+          <span lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}">{{ .LinkTitle }}</span>
+        </a>
+      {{ end }}
+    {{ end }}
+  </nav>
+{{- end -}}

@@ -8,16 +8,31 @@ import shutil
 import subprocess
 import re
 import os
+import json
 
 
 class HTML(HTMLParser):
     def __init__(self, text):
         super().__init__()
         self.tags = []
+        self.navs = []
+        self.nav_stack = []
         self.feed(text)
 
     def handle_starttag(self, tag, attrs):
-        self.tags.append((tag, dict(attrs)))
+        attrs = dict(attrs)
+        self.tags.append((tag, attrs))
+        if tag == "nav":
+            nav = {"attrs": attrs, "links": []}
+            self.navs.append(nav)
+            self.nav_stack.append(nav)
+        elif tag == "a":
+            for nav in self.nav_stack:
+                nav["links"].append(attrs)
+
+    def handle_endtag(self, tag):
+        if tag == "nav" and self.nav_stack:
+            self.nav_stack.pop()
 
 
 def build(source, output, succeeds=True, env=None):
@@ -81,7 +96,36 @@ def check_site(output):
         assert "/blob/main/docs/README.md" in project, "Editing must still use the working branch"
         assert (output / lang / "docs/lazyagents/guide/skills/index.html").exists()
     check_fragments(output)
+    check_reading_navigation(output)
+    for lang in ("", "en/"):
+        search = json.loads((output / lang / "index.json").read_text())
+        assert all("/docs/traducoes/" not in entry["permalink"] for entry in search)
+        external = [entry for entry in search if entry.get("externalUrl") == "https://sp-night.github.io/ports/"]
+        assert len(external) == 1 and external[0]["type"] == "docs"
+        doc = next(entry for entry in search if entry["permalink"] == f"/{lang}docs/lazyagents/guide/skills/")
+        assert doc["summary"], "Docs search results need context"
+        assert any(entry["permalink"] == "/docs/lazyagents/visao-geral/" for entry in search), "Retain search fallback for pages without translations"
     print(f"OK: {len(files)} HTML files, local links/assets, metadata, versions and navigation")
+
+
+def check_reading_navigation(output):
+    for file in output.rglob("*.html"):
+        html = HTML(file.read_text())
+        sidebar = next((nav for nav in html.navs if nav["attrs"].get("aria-label") in ("Project documentation", "Documentação do projeto")), None)
+        if not sidebar:
+            continue
+        order = [link["href"] for link in sidebar["links"]]
+        canonical = next(attrs["href"] for tag, attrs in html.tags if tag == "link" and attrs.get("rel") == "canonical")
+        current = order.index(urlsplit(canonical).path)
+        pager = next((nav for nav in html.navs if "docs-pagination" in nav["attrs"].get("class", "").split()), None)
+        if len(order) == 1:
+            assert pager is None, file
+            continue
+        assert pager is not None, file
+        previous = [link["href"] for link in pager["links"] if link.get("rel") == "prev"]
+        following = [link["href"] for link in pager["links"] if link.get("rel") == "next"]
+        assert previous == (order[current - 1:current] if current else []), file
+        assert following == order[current + 1:current + 2], file
 
 
 root = Path(__file__).resolve().parents[1]
@@ -163,4 +207,5 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     assert any(tag == "h1" and attrs.get("lang") == "pt-BR" and attrs.get("id") == "guide-topic" for tag, attrs in translated.tags)
     assert any("article-content" in attrs.get("class", "").split() and attrs.get("lang") == "pt-BR" for _, attrs in translated.tags)
     check_fragments(preview)
+    check_reading_navigation(preview)
     print("OK: title anchors and explicit content language for originals and translations")

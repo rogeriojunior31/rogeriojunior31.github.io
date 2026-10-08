@@ -44,6 +44,8 @@
       <div lang="{{ $contentLang }}" class="min-w-0 article-content max-w-prose mb-12">{{ .Content }}</div>
     </section>
 
+    {{ partial "docs/pagination.html" . }}
+
     <footer class="docs-foot print:hidden">
       {{ if eq .Params.docsOrigin "repo" }}
         <a href="{{ printf "https://github.com/%s/blob/%s/%s" .Params.docsRepo .Params.docsRef .Params.docsFile }}" target="_blank" rel="noreferrer">{{ cond $en "View source for this version" "Ver fonte desta versão" }}</a>

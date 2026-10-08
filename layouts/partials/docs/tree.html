@@ -1,0 +1,17 @@
+{{- /* A mesma ordem para o menu e para a navegação de leitura. */ -}}
+{{- $root := . -}}
+{{- $groups := dict -}}
+{{- $top := slice -}}
+{{- range (where $root.Site.Pages "Params.docsProject" $root.Params.docsProject).ByWeight -}}
+  {{- if eq . $root }}{{ continue }}{{ end -}}
+  {{- $dir := path.Dir .Params.docsSource -}}
+  {{- if eq $dir "." -}}
+    {{- $top = $top | append . -}}
+  {{- else -}}
+    {{- $groups = merge $groups (dict $dir ((index $groups $dir | default slice) | append .)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $pages := slice $root -}}
+{{- range $top }}{{ $pages = $pages | append . }}{{ end -}}
+{{- range $groups }}{{ range . }}{{ $pages = $pages | append . }}{{ end }}{{ end -}}
+{{- return (dict "top" $top "groups" $groups "pages" $pages) -}}

@@ -54,6 +54,8 @@ Docs titles have stable anchors based on the original English title, including t
 
 Docs use wrapping headings and larger sidebar touch targets on mobile. Print styles expand the content to the available width and wrap table cells. Reduced-motion preferences disable card movement and smooth scrolling.
 
+Previous/next links follow the sidebar order within the current project and language. Search includes external documentation entries and content excerpts for imported docs, retaining the theme's fallback for untranslated pages. Results update when pasting or clearing text, including queries entered before the search index finishes loading.
+
 Site layer (`docs-site/<slug>/<lang>/`, written here, not in the project repo):
 - a file with the same path as a repository page translates that page for `<lang>` (e.g. `docs-site/lazyagents/pt-br/README.md`); the page links back to the English original;
 - any other path is a page that exists only on the site, in that language (e.g. `visao-geral.md`);
@@ -103,3 +105,5 @@ Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 Requires Settings → Pages → Source set to **GitHub Actions**.
 
 Local docs regression checks: `python scripts/check-docs.py` (Python standard library only). Builds both languages, checks local links/assets, metadata and version links, and exercises external docs plus invalid configurations in a temporary copy.
+
+Optional browser checks against a running preview: `uv run --with playwright python scripts/check-search-browser.py http://localhost:1313` (install Chromium first with `uv run --with playwright playwright install chromium`). Covers both languages at four viewport widths, reading links, search input changes, a delayed search index and print visibility.

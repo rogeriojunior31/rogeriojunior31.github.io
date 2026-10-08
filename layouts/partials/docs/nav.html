@@ -1,22 +1,12 @@
 {{- /* Árvore do projeto: páginas da raiz de docs/ e depois uma seção por subpasta (guide/, reference/…). */ -}}
 {{- $root := .root -}}
 {{- $cur := .current -}}
-{{- $groups := dict -}}
-{{- $top := slice -}}
-{{- range (where $root.Site.Pages "Params.docsProject" $root.Params.docsProject).ByWeight -}}
-  {{- if eq . $root }}{{ continue }}{{ end -}}
-  {{- $dir := path.Dir .Params.docsSource -}}
-  {{- if eq $dir "." -}}
-    {{- $top = $top | append . -}}
-  {{- else -}}
-    {{- $groups = merge $groups (dict $dir ((index $groups $dir | default slice) | append .)) -}}
-  {{- end -}}
-{{- end -}}
+{{- $tree := partial "docs/tree.html" $root -}}
 <p class="docs-nav-title"><a href="{{ $root.RelPermalink }}" {{ if eq $root $cur }}aria-current="page"{{ end }}>{{ $root.Params.docsName }}</a></p>
 <ul>
-  {{ range $top }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
+  {{ range $tree.top }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
 </ul>
-{{ range $dir, $pages := $groups }}
+{{ range $dir, $pages := $tree.groups }}
   <p class="docs-nav-group">{{ $dir }}/</p>
   <ul>
     {{ range $pages }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}

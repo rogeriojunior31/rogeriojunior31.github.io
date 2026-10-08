@@ -7,6 +7,27 @@
 </div>
 <script>
 (() => {
+  // O tema usa keyup; input também cobre colar texto e o botão nativo de limpar.
+  document.addEventListener("DOMContentLoaded", () => {
+    const search = document.getElementById("search-query");
+    if (!search || typeof executeQuery !== "function") return;
+    const query = executeQuery;
+    executeQuery = (term) => {
+      if (term.trim()) return query(term);
+      document.getElementById("search-results").replaceChildren();
+      hasResults = false;
+    };
+    // Reaplica a consulta quando o índice chega, inclusive em conexões lentas.
+    if (typeof fetchJSON === "function") {
+      const loadJSON = fetchJSON;
+      fetchJSON = (path, callback) => loadJSON(path, (data) => {
+        callback(data);
+        if (search.value) executeQuery(search.value);
+      });
+    }
+    search.onkeyup = null;
+    search.addEventListener("input", () => executeQuery(search.value));
+  }, { once: true });
   const docsNav = document.querySelector("[data-docs-nav]");
   if (docsNav) {
     const mobile = matchMedia("(max-width: 899px)");

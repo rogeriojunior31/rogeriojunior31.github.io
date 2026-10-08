@@ -1,0 +1,32 @@
+{{- $index := slice -}}
+{{- $pages := .Site.Pages -}}
+{{- range .Site.Home.Translations }}{{ $pages = $pages | lang.Merge .Site.Pages }}{{ end -}}
+{{- range $pages -}}
+  {{- if .Params.excludeFromSearch }}{{ continue }}{{ end -}}
+  {{- $section := "" -}}
+  {{- with .Site.GetPage "section" .Section }}{{ $section = .Title }}{{ end -}}
+  {{- $summary := .Description | default (.Summary | plainify | htmlUnescape) -}}
+  {{- if .Params.docsProject }}{{ $summary = .Plain | truncate 160 }}{{ end -}}
+  {{- $entry := dict
+    "title" (.Title | emojify | safeJS)
+    "section" ($section | emojify | safeJS)
+    "summary" ($summary | safeJS)
+    "content" (.Plain | safeJS)
+    "permalink" .RelPermalink
+    "externalUrl" .Params.externalUrl
+    "type" .Type -}}
+  {{- if .Date }}{{ $entry = merge $entry (dict "date" (.Date | time.Format (.Site.Language.Params.dateFormat | default ":date_long"))) }}{{ end -}}
+  {{- $index = $index | append $entry -}}
+{{- end -}}
+{{- $docs := .Site.GetPage "/docs" -}}
+{{- range hugo.Data.docs -}}
+  {{- if not .url }}{{ continue }}{{ end -}}
+  {{- $summary := index .summary $.Site.Language.Lang | default (index .summary "en") -}}
+  {{- $index = $index | append (dict
+    "title" (printf "%s · %s" .name $docs.Title | safeJS)
+    "section" $docs.Title
+    "summary" ($summary | plainify | safeJS)
+    "content" ($summary | plainify | safeJS)
+    "permalink" .url "externalUrl" .url "type" "docs") -}}
+{{- end -}}
+{{- $index | jsonify -}}
