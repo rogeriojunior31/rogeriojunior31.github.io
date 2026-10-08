@@ -209,3 +209,18 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     check_fragments(preview)
     check_reading_navigation(preview)
     print("OK: title anchors and explicit content language for originals and translations")
+
+    metadata = local / "docs/site.json"
+    metadata.write_text(json.dumps({"schema": 1, "name": "Localized project", "summary": {"en": "Repository English summary", "pt-br": "Resumo vindo do projeto"}}))
+    localized = temp / "localized"
+    build(source, localized, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    for lang, summary in (("", "Resumo vindo do projeto"), ("en/", "Repository English summary")):
+        hub = (localized / lang / "docs/index.html").read_text()
+        assert "Localized project" in hub and summary in hub
+        page = (localized / lang / "docs/lazyagents/index.html").read_text()
+        assert "Localized project" in page and summary in page
+    metadata.write_text(json.dumps({"schema": 1, "name": "Invalid", "summary": {"en": "English only"}}))
+    assert "summary.pt-br" in build(source, temp / "invalid-metadata", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    metadata.write_text(json.dumps({"schema": 2, "name": "Invalid", "summary": {"en": "English", "pt-br": "Portuguese"}}))
+    assert "schema 1" in build(source, temp / "invalid-schema", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    print("OK: versioned project metadata in both languages; missing summaries and unsupported schema fail the build")

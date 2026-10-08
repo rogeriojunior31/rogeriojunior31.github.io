@@ -17,7 +17,7 @@
   o aviso de tradução desatualizada. /docs/traducoes/ lista o estado e a marca atual de cada página.
 */ -}}
 {{- $status := slice }}
-{{- range hugo.Data.docs }}
+{{- range partial "docs/projects.html" . }}
   {{- $proj := . }}
   {{- if $proj.url }}{{ continue }}{{ end }}
   {{- $root := printf "docs/%s/" $proj.slug }}

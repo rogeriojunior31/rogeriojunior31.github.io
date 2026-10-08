@@ -19,7 +19,7 @@
   {{- $index = $index | append $entry -}}
 {{- end -}}
 {{- $docs := .Site.GetPage "/docs" -}}
-{{- range hugo.Data.docs -}}
+{{- range partial "docs/projects.html" . -}}
   {{- if not .url }}{{ continue }}{{ end -}}
   {{- $summary := index .summary $.Site.Language.Lang | default (index .summary "en") -}}
   {{- $index = $index | append (dict

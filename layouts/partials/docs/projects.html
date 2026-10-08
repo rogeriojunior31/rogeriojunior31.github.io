@@ -1,0 +1,22 @@
+{{- /* Metadados do projeto acompanham a mesma versão dos docs importados. */ -}}
+{{- $projects := slice -}}
+{{- range hugo.Data.docs -}}
+  {{- $project := . -}}
+  {{- if not .url -}}
+    {{- with resources.Get (printf "docs/%s/site.json" .slug) -}}
+      {{- $meta := .Content | transform.Unmarshal -}}
+      {{- if ne (int ($meta.schema | default 0)) 1 -}}
+        {{- errorf "Docs %s: site.json exige schema 1" $project.slug -}}
+      {{- end -}}
+      {{- if not (strings.TrimSpace ($meta.name | default "")) -}}{{ errorf "Docs %s: site.json exige name" $project.slug }}{{- end -}}
+      {{- range hugo.Sites -}}
+        {{- if not (strings.TrimSpace (index ($meta.summary | default dict) .Language.Lang | default "")) -}}
+          {{- errorf "Docs %s: site.json exige summary.%s" $project.slug .Language.Lang -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $project = merge $project (dict "name" $meta.name "summary" $meta.summary) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $projects = $projects | append $project -}}
+{{- end -}}
+{{- return $projects -}}

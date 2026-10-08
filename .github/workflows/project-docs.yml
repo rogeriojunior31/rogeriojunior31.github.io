@@ -54,6 +54,24 @@ jobs:
           done < <(find docs -name '*.md' -not -path 'docs/dev/*' -print0)
           exit $fail
 
+      - name: Localized website metadata
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("docs/site.json")
+          if path.exists():
+              data = json.loads(path.read_text())
+              assert data.get("schema") == 1, "docs/site.json requires schema 1"
+              assert isinstance(data.get("name"), str) and data["name"].strip(), "docs/site.json requires name"
+              summary = data.get("summary", {})
+              for lang in ("en", "pt-br"):
+                  assert isinstance(summary.get(lang), str) and summary[lang].strip(), f"docs/site.json requires summary.{lang}"
+              print("OK: website metadata in English and Brazilian Portuguese")
+          else:
+              print("Legacy docs: metadata comes from the website registry")
+          PY
+
       - name: Translations follow the English original
         # docs/<idioma>/<caminho>.md traduz docs/<caminho>.md e guarda "<!-- source: <marca> -->",
         # a marca do original traduzido (sha256sum docs/<caminho> | cut -c1-12). Marca diferente =

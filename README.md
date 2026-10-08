@@ -46,6 +46,21 @@ For an existing docs website (MkDocs, Docusaurus, etc.), add an entry to `data/d
 
 Imported projects require `docs/README.md`; a missing index fails the build instead of silently hiding the project. Pages and cards show the resolved module version. Source links, fallback images and repository references use that version (or its commit for a Go pseudo-version); editing links still use the working branch. Local module replacements use the working branch and do not display a released version.
 
+Projects may own their display metadata in `docs/site.json`. The website reads it from the same revision as their docs and uses it in the catalog, page metadata and search. Older projects keep using the registry's `name` and `summary`; registration and the module mount are still required once per project. The shared workflow validates this optional file:
+
+```json
+{
+  "schema": 1,
+  "name": "My project",
+  "summary": {
+    "en": "Project documentation.",
+    "pt-br": "Documentação do projeto."
+  }
+}
+```
+
+Each configured website language needs a summary. Translations are detected by corresponding Markdown paths, not declared complete in the metadata. A translated index alone does not translate its linked pages. Check `/docs/traducoes/` for missing or outdated translations; source marks must only be refreshed after reviewing the translation.
+
 Rules for a repository's `docs/`: plain GitHub Markdown, title = first `# H1`, `docs/README.md` is the project page and its link order is the sidebar order, relative links (`guide/x.md`, `../CONTRIBUTING.md`), images in `docs/assets/`. `docs/dev/` is not published.
 
 Nested indexes such as `docs/guide/README.md` become sections and appear in the sidebar with their child pages. Root-relative site URLs (`/projects/`) and protocol-relative CDN URLs (`//example.org/...`) are preserved; relative links and images retain query parameters and fragments.
