@@ -45,6 +45,29 @@
   const tick = () => { if (clock) clock.textContent = new Date().toLocaleString(document.documentElement.lang || "pt-BR", { weekday: "short", day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }); };
   tick(); setInterval(tick, 30000);
 
+  // Home: carrossel dos showcases. Avança sozinho, exceto com movimento reduzido, mouse ou foco
+  // dentro, vídeo tocando, aba oculta ou carrossel fora da tela.
+  document.querySelectorAll("[data-carousel]").forEach((root) => {
+    const track = root.querySelector("[data-carousel-track]");
+    const dots = [...root.querySelectorAll("[data-carousel-dot]")];
+    const n = track.children.length;
+    const index = () => Math.round(track.scrollLeft / track.clientWidth);
+    const go = (i) => track.scrollTo({ left: ((i + n) % n) * track.clientWidth });
+    dots.forEach((d, i) => d.addEventListener("click", () => go(i)));
+    track.addEventListener("scroll", () => {
+      const i = index();
+      dots.forEach((d, j) => (i === j ? d.setAttribute("aria-current", "true") : d.removeAttribute("aria-current")));
+    }, { passive: true });
+    if (reduce) return;
+    let hover = false, visible = true;
+    root.addEventListener("pointerenter", () => { hover = true; });
+    root.addEventListener("pointerleave", () => { hover = false; });
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(root);
+    const busy = () => hover || !visible || document.hidden || root.contains(document.activeElement)
+      || [...root.querySelectorAll("video")].some((v) => !v.paused);
+    setInterval(() => { if (!busy()) go(index() + 1); }, 7000);
+  });
+
   if (reduce) return;
 
   // Digita o texto de um elemento, caractere por caractere.

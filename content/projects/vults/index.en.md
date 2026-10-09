@@ -2,6 +2,7 @@
 title: "Vults"
 date: 2026-10-05
 summary: "A Rust and Tauri desktop app for people who run several coding agents at once: every session is an 8-bit vulture at the top of the screen, with approvals, chat and a companion named Zeca."
+showcase: "vults"
 tags: ["Desktop", "Rust", "Tauri", "AI", "Open Source"]
 ---
 

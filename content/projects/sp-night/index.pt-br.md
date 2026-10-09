@@ -2,6 +2,7 @@
 title: "SP Night"
 date: 2026-08-02
 summary: "Um tema escuro com São Paulo como referência: três variações, cores com contraste medido e ports gerados da mesma paleta para terminais, editores e CLIs."
+showcase: "spnight"
 tags: ["Tema", "Open Source", "Go", "Astro"]
 ---
 

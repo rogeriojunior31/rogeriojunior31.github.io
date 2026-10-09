@@ -223,6 +223,20 @@ h1 { letter-spacing: -0.02em; }
 .spn-swatches li::before { display: none; }
 @media (max-width: 639px) { .spn-swatches { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
 
+/* Home: carrossel dos showcases (shortcode showcases). Cada showcase ocupa a largura toda. */
+.prose:has(> .showcase-carousel) { max-width: 72rem; }
+.showcase-carousel { margin: 2rem 0; }
+.showcase-track { display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.showcase-track::-webkit-scrollbar { display: none; }
+.showcase-track > .lazy-showcase { flex: 0 0 100%; margin: 0; scroll-snap-align: start; box-shadow: none; }
+.showcase-dots { display: flex; justify-content: center; gap: .25rem; margin-top: .5rem; }
+.showcase-dots button { width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; }
+.showcase-dots button::before { content: ""; display: block; width: .6rem; height: .6rem; margin: auto; border-radius: 1rem; background: var(--sp-fiacao); transition: width .2s, background .2s; }
+.showcase-dots button[aria-current="true"]::before { width: 1.6rem; background: var(--sp-sodio); }
+.showcase-dots button:focus-visible { outline: 2px solid var(--sp-sodio); outline-offset: 2px; border-radius: .4rem; }
+@media (prefers-reduced-motion: reduce) { .showcase-track { scroll-behavior: auto; } }
+@media print { .showcase-carousel { display: none; } }
+
 /* ---------- Docs (layouts/docs, partials/docs) ---------- */
 .docs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr)); gap: 1rem; margin: 2rem 0 4rem; }
 .docs-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--sp-fiacao); border-radius: .6rem; background: var(--sp-vao); text-decoration: none !important; transition: border-color .15s, transform .15s; }

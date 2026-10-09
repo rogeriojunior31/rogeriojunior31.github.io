@@ -2,6 +2,7 @@
 title: "Vults"
 date: 2026-10-05
 summary: "Um app de desktop em Rust e Tauri para quem roda vários agentes de código ao mesmo tempo: cada sessão é um urubu 8-bit no topo da tela, com aprovações, chat e um companheiro chamado Zeca."
+showcase: "vults"
 tags: ["Desktop", "Rust", "Tauri", "IA", "Open Source"]
 ---
 

@@ -1,0 +1,14 @@
+{{- /* Home: carrossel com os showcases dos projetos, do mais recente (date) ao mais antigo.
+       Entra todo projeto com `showcase: "<nome>"` no front matter, que aponta para
+       partials/<nome>-showcase.html. Rola sozinho (extend-footer.html), pausa com o mouse,
+       o foco ou o vídeo tocando; os pontos levam a cada projeto. */ -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $slides := where (site.GetPage "/projects").RegularPages.ByDate.Reverse "Params.showcase" "!=" nil -}}
+<div class="showcase-carousel not-prose" data-carousel aria-roledescription="carousel" aria-label="{{ cond $en "Projects" "Projetos" }}">
+  <div class="showcase-track" data-carousel-track>
+    {{ range $slides }}{{ partial (printf "%s-showcase.html" .Params.showcase) "home" }}{{ end }}
+  </div>
+  <div class="showcase-dots" role="group" aria-label="{{ cond $en "Choose a project" "Escolha um projeto" }}">
+    {{ range $i, $p := $slides }}<button type="button" data-carousel-dot aria-label="{{ $p.Title }}"{{ if eq $i 0 }} aria-current="true"{{ end }}></button>{{ end }}
+  </div>
+</div>

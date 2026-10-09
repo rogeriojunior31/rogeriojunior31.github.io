@@ -7,4 +7,4 @@ Ferramentas de terminal, open source e experimentos com IA.
 
 [Explorar projetos]({{< relref "projects" >}}) · [Documentação]({{< relref "docs" >}}) · [Currículo]({{< relref "resume" >}}) · [Fale comigo](mailto:rogerio.junior20@outlook.com)
 
-{{< lazyagents placement="home" >}}
+{{< showcases >}}
