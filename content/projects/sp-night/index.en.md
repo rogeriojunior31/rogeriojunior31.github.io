@@ -2,6 +2,7 @@
 title: "SP Night"
 date: 2026-08-02
 summary: "A dark colour scheme with São Paulo as its reference: three flavours, contrast-checked colours and ports generated from one palette for terminals, editors and CLIs."
+showcase: "spnight"
 tags: ["Theme", "Open Source", "Go", "Astro"]
 ---
 

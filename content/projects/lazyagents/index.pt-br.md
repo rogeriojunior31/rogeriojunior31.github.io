@@ -2,6 +2,7 @@
 title: "lazyagents"
 date: 2026-09-28
 summary: "Uma TUI em Go para gerenciar, num lugar só, o que seus agentes de código com IA usam: skills, sessões, consumo, providers e hooks."
+showcase: "lazyagents"
 tags: ["CLI", "TUI", "Go", "IA", "Open Source"]
 ---
 

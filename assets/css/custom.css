@@ -223,6 +223,20 @@ h1 { letter-spacing: -0.02em; }
 .spn-swatches li::before { display: none; }
 @media (max-width: 639px) { .spn-swatches { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
 
+/* Home: carrossel dos showcases (shortcode showcases). Cada showcase ocupa a largura toda. */
+.prose:has(> .showcase-carousel) { max-width: 72rem; }
+.showcase-carousel { margin: 2rem 0; }
+.showcase-track { display: flex; align-items: center; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; overscroll-behavior-x: contain; }
+.showcase-track::-webkit-scrollbar { display: none; }
+.showcase-track > .lazy-showcase { flex: 0 0 100%; margin: 0; scroll-snap-align: start; box-shadow: none; }
+.showcase-dots { display: flex; justify-content: center; gap: .25rem; margin-top: .5rem; }
+.showcase-dots button { width: 32px; height: 32px; padding: 0; border: 0; background: none; cursor: pointer; }
+.showcase-dots button::before { content: ""; display: block; width: .6rem; height: .6rem; margin: auto; border-radius: 1rem; background: var(--sp-fiacao); transition: width .2s, background .2s; }
+.showcase-dots button[aria-current="true"]::before { width: 1.6rem; background: var(--sp-sodio); }
+.showcase-dots button:focus-visible { outline: 2px solid var(--sp-sodio); outline-offset: 2px; border-radius: .4rem; }
+@media (prefers-reduced-motion: reduce) { .showcase-track { scroll-behavior: auto; } }
+@media print { .showcase-carousel { display: none; } }
+
 /* ---------- Docs (layouts/docs, partials/docs) ---------- */
 .docs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr)); gap: 1rem; margin: 2rem 0 4rem; }
 .docs-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--sp-fiacao); border-radius: .6rem; background: var(--sp-vao); text-decoration: none !important; transition: border-color .15s, transform .15s; }
@@ -245,11 +259,17 @@ body:has(.docs-layout) header > .min-h-\[148px\] { min-height: 96px; }
 .docs-nav li a:hover { color: var(--sp-fg-vivo); background: var(--sp-concreto); }
 .docs-nav a[aria-current="page"] { color: var(--sp-sodio) !important; background: var(--sp-concreto); font-weight: 700; }
 .docs-nav-title { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 700; }
-.docs-nav-toggle summary { padding: .75rem 0; cursor: pointer; color: var(--sp-sodio); }
-@media (min-width: 900px) { .docs-nav-toggle summary { display: none; } }
+.docs-nav-toggle > summary { padding: .75rem 0; cursor: pointer; color: var(--sp-sodio); }
+@media (min-width: 900px) { .docs-nav-toggle > summary { display: none; } }
 .docs-version { margin: .5rem 0; color: var(--sp-fg-dim); font-family: var(--font-mono); font-size: .85rem; }
 .docs-nav-title a { color: var(--sp-fg-vivo); text-decoration: none; }
-.docs-nav-group { margin: .25rem 0 .5rem .7rem; color: var(--sp-marginal); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
+.docs-nav-group { display: flex; align-items: center; gap: .5rem; margin: 0 0 .25rem; padding: .38rem .7rem; border-radius: .4rem; list-style: none; cursor: pointer; color: var(--sp-marginal); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
+.docs-nav-group::-webkit-details-marker { display: none; }
+.docs-nav-group::before { content: "▸"; color: var(--sp-fg-dim); transition: transform .15s; }
+.docs-nav-folder[open] > .docs-nav-group::before { transform: rotate(90deg); }
+.docs-nav-group:hover { background: var(--sp-concreto); }
+.docs-nav-folder ul { margin: 0 0 .75rem .9rem; padding-left: .5rem; border-left: 1px solid var(--sp-fiacao); }
+.docs-nav-folder:not([open]) { margin-bottom: .25rem; }
 
 /* Conteúdo: linhas de até ~80 caracteres (o tema usa 65) e sumário com respiro. */
 .docs-main .article-content { max-width: 52rem; }
@@ -279,7 +299,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 @media (max-width: 899px) {
   .docs-layout { grid-template-columns: 1fr; gap: 1rem; }
   .docs-nav { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--sp-fiacao); padding: 0 0 .75rem; }
-  .docs-nav li a { min-height: 44px; display: flex; align-items: center; }
+  .docs-nav li a, .docs-nav-group { min-height: 44px; }
+  .docs-nav li a { display: flex; align-items: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

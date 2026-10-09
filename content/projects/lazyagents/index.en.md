@@ -2,6 +2,7 @@
 title: "lazyagents"
 date: 2026-09-28
 summary: "A Go TUI to manage, in one place, what your AI coding agents use: skills, sessions, usage, providers and hooks."
+showcase: "lazyagents"
 tags: ["CLI", "TUI", "Go", "AI", "Open Source"]
 ---
 
