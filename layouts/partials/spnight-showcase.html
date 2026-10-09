@@ -1,0 +1,43 @@
+{{- /* Showcase do SP Night: projeto e entrada das docs. Paleta, variações e ports vêm do
+       próprio repositório (hugo.Data.spnight, montado em config/_default/module.toml). */ -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $data := hugo.Data.spnight -}}
+{{- $docs := site.GetPage "/docs/sp-night" -}}
+{{- $start := site.GetPage "/docs/sp-night/getting-started" | default $docs -}}
+{{- $logo := resources.Get "docs/sp-night/assets/logo.svg" -}}
+{{- $ports := slice -}}{{- range $data.ports.ports }}{{ $ports = $ports | append .name }}{{ end -}}
+<section class="lazy-showcase lazy-showcase--{{ . }} spn-showcase not-prose" aria-label="{{ cond $en "Meet SP Night" "Conheça o SP Night" }}">
+  <div class="lazy-showcase-copy">
+    <div class="lazy-brand">
+      {{ with $logo }}<img src="{{ .RelPermalink }}" width="96" height="96" alt="{{ cond $en "SP Night logo: the Pico do Jaraguá at dusk, aviation beacon lit" "Logo do SP Night: o Pico do Jaraguá ao anoitecer, com a luz de aviação acesa" }}">{{ end }}
+      <div><span class="lazy-eyebrow">OPEN SOURCE / GO / {{ cond $en "COLOUR SCHEME" "TEMA DE CORES" }}</span><h2>SP Night<span aria-hidden="true">_</span></h2></div>
+    </div>
+    <p class="lazy-headline">{{ cond $en "The sodium lamp turns the whole city this colour." "O poste de sódio deixa a cidade inteira desta cor." }}</p>
+    <p class="lazy-description">{{ cond $en "A dark colour scheme with São Paulo as its reference. Every colour is measured for contrast before it ships, and every port is generated from the same palette." "Um tema escuro com São Paulo como referência. Cada cor tem o contraste medido antes de ser publicada, e todo port é gerado da mesma paleta." }}</p>
+    {{ with $ports }}<p class="lazy-agents">{{ delimit . " · " }}</p>{{ end }}
+    <div class="lazy-actions">
+      <a class="lazy-action-primary" href="{{ if eq . "docs" }}{{ $start.RelPermalink }}{{ else }}{{ $docs.RelPermalink }}{{ end }}">{{ if eq . "docs" }}{{ cond $en "Get started" "Começar agora" }}{{ else }}{{ cond $en "Explore the docs" "Explorar as docs" }}{{ end }} <span aria-hidden="true">→</span></a>
+      <a href="https://sp-night.github.io/ports/">{{ cond $en "Install a port" "Instalar um port" }} <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/sp-night/sp-night">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <figure class="lazy-demo spn-palette">
+    <div class="lazy-demo-bar" aria-hidden="true"><span class="lazy-demo-dots"><i></i><i></i><i></i></span><span>~/sp-night</span><span>spn palette</span></div>
+    <div class="spn-flavors">
+      {{ range slice "noite" "garoa" "jaragua" }}
+        {{ $id := . }}
+        {{ with index $data.palette.flavors $id }}
+          {{ $c := .colors }}
+          <div class="spn-flavor" style="--bg: {{ $c.laje | safeCSS }}; --panel: {{ $c.concreto | safeCSS }}; --line: {{ $c.fiacao | safeCSS }}; --fg: {{ $c.fg | safeCSS }}; --dim: {{ $c.fg_dim | safeCSS }}; --accent: {{ $c.sodio | safeCSS }}">
+            <p class="spn-flavor-name"><code>{{ $id }}</code> {{ .label }}</p>
+            <p class="spn-flavor-idea">{{ if $en }}{{ index $data.copy.flavours $id }}{{ else }}{{ .description }}{{ end }}</p>
+            <ul class="spn-swatches" aria-hidden="true">
+              {{ range (slice $data.palette.groups.surfaces.keys $data.palette.groups.accents.keys) }}{{ range . }}<li style="background: {{ index $c . | safeCSS }}" title="{{ . }} {{ index $c . }}"></li>{{ end }}{{ end }}
+            </ul>
+          </div>
+        {{ end }}
+      {{ end }}
+    </div>
+    <figcaption><span>{{ len $data.palette.flavors.noite.colors }} {{ cond $en "colours" "cores" }} · {{ len $data.palette.flavors }} {{ cond $en "flavours" "variações" }}</span><span>{{ cond $en "Read from palette/sp_night.json" "Lido de palette/sp_night.json" }}</span></figcaption>
+  </figure>
+</section>
