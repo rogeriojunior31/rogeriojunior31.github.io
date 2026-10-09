@@ -140,7 +140,7 @@
   {{- $rows := slice "| Página | Arquivo da tradução | Estado | Marca atual (`source:`) |" "|---|---|---|---|" }}
   {{- $labels := dict "ok" "✅ em dia" "stale" "⚠️ original mudou" "unmarked" "❔ sem marca" "missing" "— não traduzida" }}
   {{- range sort (where $status "lang" $lang) "path" }}
-    {{- $rows = $rows | append (printf "| [%s · %s](/docs/%s/) | `%s` | %s | `%s` |" .proj .title .path (cond (eq .state "missing") (cond (eq .translations "site") (printf "docs-site/%s/%s/%s" .slug $lang .rel) (printf "docs/%s/%s (repo %s)" $lang .rel .repo)) .file) (index $labels .state) .hash) }}
+    {{- $rows = $rows | append (printf "| [%s · %s](/docs/%s/) | `%s` | %s | `%s` |" .proj .title (lower .path) (cond (eq .state "missing") (cond (eq .translations "site") (printf "docs-site/%s/%s/%s" .slug $lang .rel) (printf "docs/%s/%s (repo %s)" $lang .rel .repo)) .file) (index $labels .state) .hash) }}
   {{- end }}
   {{- $.AddPage (dict
     "path" "traducoes"
