@@ -4,7 +4,7 @@
 # GOPRIVATE busca direto do GitHub, sem esperar o cache do proxy do Go depois de uma tag nova.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-export GOPRIVATE="github.com/rogeriojunior31/*"
+export GOPRIVATE="github.com/rogeriojunior31/*,github.com/sp-night/*"
 
 repos=$(sed -nE 's/^[[:space:]]*repo:[[:space:]]*"?([A-Za-z0-9._-]+\/[A-Za-z0-9._-]+)"?[[:space:]]*$/\1/p' data/docs.yaml)
 modules=$(hugo mod graph | awk '{ sub(/@.*/, "", $2); print $2 }')
