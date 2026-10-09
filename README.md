@@ -121,7 +121,7 @@ The SP Night project page and docs index use `{{< spnight >}}` / `layouts/partia
 
 ### Vults showcase
 
-The Vults project page and docs index use `{{< vults >}}` / `layouts/partials/vults-showcase.html`. The logo (`docs/assets/logo.png`, falling back to `zeca.png` before v0.1.7) and the island screenshot (`docs/assets/island-flock.png`) are read from the imported module, so a new screenshot in the project appears with its next release. The logo is pixel art: it is resized with `NearestNeighbor` and drawn with `image-rendering: pixelated`. Vults docs are English only until its 1.0 (no `requiredTranslations`). The repository name has an uppercase letter: the module path is `github.com/rogeriojunior31/Vults`.
+The Vults project page and docs index use `{{< vults >}}` / `layouts/partials/vults-showcase.html`. The logo (`docs/assets/logo.png`, falling back to `zeca.png` before v0.1.7) and the island screenshot (`docs/assets/island-flock.png`) are read from the imported module, so a new screenshot in the project appears with its next release. The logo is pixel art: it is resized with `NearestNeighbor` and drawn with `image-rendering: pixelated`. Vults docs are complete in Portuguese (`requiredTranslations: ["pt-br"]` in its `docs/site.json`, translations in its `docs/pt-br/`), checked by `check-docs-language.py` like lazyagents and SP Night. The repository name has an uppercase letter: the module path is `github.com/rogeriojunior31/Vults`.
 
 Preview Vults docs that are not pushed yet:
 
@@ -154,4 +154,4 @@ Local docs regression checks: `python scripts/check-docs.py` (Python standard li
 
 Optional browser checks against a running preview: `uv run --with playwright python scripts/check-search-browser.py http://localhost:1313` (install Chromium first with `uv run --with playwright playwright install chromium`). Covers both languages at four viewport widths, reading links, search input changes, a delayed search index and print visibility.
 
-Complete lazyagents and SP Night language checks: `python3 scripts/check-docs-language.py public` or `python3 scripts/check-docs-language.py https://rogeriojunior31.github.io`. Checks every public English doc and its Portuguese counterpart, rejecting English fallback, stale translations, identical untranslated bodies and duplicate HTML anchors. CI checks the built artifact before publication.
+Complete lazyagents, SP Night and Vults language checks: `python3 scripts/check-docs-language.py public` or `python3 scripts/check-docs-language.py https://rogeriojunior31.github.io`. Checks every public English doc and its Portuguese counterpart, rejecting English fallback, stale translations, identical untranslated bodies and duplicate HTML anchors. CI checks the built artifact before publication.
