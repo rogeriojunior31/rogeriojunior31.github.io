@@ -259,11 +259,17 @@ body:has(.docs-layout) header > .min-h-\[148px\] { min-height: 96px; }
 .docs-nav li a:hover { color: var(--sp-fg-vivo); background: var(--sp-concreto); }
 .docs-nav a[aria-current="page"] { color: var(--sp-sodio) !important; background: var(--sp-concreto); font-weight: 700; }
 .docs-nav-title { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 700; }
-.docs-nav-toggle summary { padding: .75rem 0; cursor: pointer; color: var(--sp-sodio); }
-@media (min-width: 900px) { .docs-nav-toggle summary { display: none; } }
+.docs-nav-toggle > summary { padding: .75rem 0; cursor: pointer; color: var(--sp-sodio); }
+@media (min-width: 900px) { .docs-nav-toggle > summary { display: none; } }
 .docs-version { margin: .5rem 0; color: var(--sp-fg-dim); font-family: var(--font-mono); font-size: .85rem; }
 .docs-nav-title a { color: var(--sp-fg-vivo); text-decoration: none; }
-.docs-nav-group { margin: .25rem 0 .5rem .7rem; color: var(--sp-marginal); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
+.docs-nav-group { display: flex; align-items: center; gap: .5rem; margin: 0 0 .25rem; padding: .38rem .7rem; border-radius: .4rem; list-style: none; cursor: pointer; color: var(--sp-marginal); font-weight: 700; font-size: .85rem; letter-spacing: .02em; }
+.docs-nav-group::-webkit-details-marker { display: none; }
+.docs-nav-group::before { content: "▸"; color: var(--sp-fg-dim); transition: transform .15s; }
+.docs-nav-folder[open] > .docs-nav-group::before { transform: rotate(90deg); }
+.docs-nav-group:hover { background: var(--sp-concreto); }
+.docs-nav-folder ul { margin: 0 0 .75rem .9rem; padding-left: .5rem; border-left: 1px solid var(--sp-fiacao); }
+.docs-nav-folder:not([open]) { margin-bottom: .25rem; }
 
 /* Conteúdo: linhas de até ~80 caracteres (o tema usa 65) e sumário com respiro. */
 .docs-main .article-content { max-width: 52rem; }
@@ -293,7 +299,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px soli
 @media (max-width: 899px) {
   .docs-layout { grid-template-columns: 1fr; gap: 1rem; }
   .docs-nav { position: static; max-height: none; border-right: 0; border-bottom: 1px solid var(--sp-fiacao); padding: 0 0 .75rem; }
-  .docs-nav li a { min-height: 44px; display: flex; align-items: center; }
+  .docs-nav li a, .docs-nav-group { min-height: 44px; }
+  .docs-nav li a { display: flex; align-items: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

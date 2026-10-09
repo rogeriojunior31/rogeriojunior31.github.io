@@ -6,9 +6,12 @@
 <ul>
   {{ range $tree.top }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
 </ul>
+{{- /* Cada pasta nasce recolhida; só abre a que contém a página atual. */ -}}
 {{ range $dir, $pages := $tree.groups }}
-  <p class="docs-nav-group">{{ $dir }}/</p>
-  <ul>
-    {{ range $pages }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
-  </ul>
+  <details class="docs-nav-folder"{{ if in $pages $cur }} open{{ end }}>
+    <summary class="docs-nav-group">{{ $dir }}/</summary>
+    <ul>
+      {{ range $pages }}<li><a lang="{{ cond (or .Params.docsTranslated .Params.docsSiteOnly) site.Language.Locale "en" }}" href="{{ .RelPermalink }}" {{ if eq . $cur }}aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>{{ end }}
+    </ul>
+  </details>
 {{ end }}
