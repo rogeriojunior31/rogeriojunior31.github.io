@@ -205,6 +205,11 @@ h1 { letter-spacing: -0.02em; }
 }
 @media print { .lazy-showcase { display: none; } }
 
+/* Vults: mesma estrutura do showcase; no lugar do vídeo, a screenshot da ilha (fundo preto como o app). */
+.vults-showcase .vults-logo { image-rendering: pixelated; }
+.vults-shot { background: #000; }
+.vults-shot img { display: block; width: 100%; height: auto; margin: 0; }
+
 /* SP Night: reaproveita a estrutura do showcase acima; no lugar do vídeo, as três variações
    pintadas com as próprias cores (vêm de hugo.Data.spnight, não deste arquivo). */
 .spn-palette { background: var(--sp-vao); }

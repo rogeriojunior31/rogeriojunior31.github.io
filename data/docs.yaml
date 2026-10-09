@@ -20,3 +20,12 @@
   summary:
     pt-br: "Um tema escuro com São Paulo como referência: o contrato da paleta, o motor spn e o guia para criar um port."
     en: "A dark colour scheme with São Paulo as its reference: the palette contract, the spn engine and the guide to adding a port."
+- slug: vults
+  name: Vults
+  repo: rogeriojunior31/Vults
+  branch: main
+  translations: repo
+  # A partir da v0.1.7 o nome e o resumo vêm do docs/site.json do projeto; este é o fallback.
+  summary:
+    pt-br: "App de desktop em Rust e Tauri: cada sessão do Claude Code, Codex, Gemini CLI e Antigravity vira um urubu 8-bit, com aprovações, chat e o Zeca."
+    en: "A Rust and Tauri desktop app: every Claude Code, Codex, Gemini CLI and Antigravity session becomes an 8-bit vulture, with approvals, chat and Zeca."

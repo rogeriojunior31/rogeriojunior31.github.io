@@ -32,6 +32,10 @@ github.com/nunocoracao/blowfish/v3 v3.8.0 h1:vPXz1wWN+sd0jZUwfEco96S1I66Sb5+pJgZ
 github.com/nunocoracao/blowfish/v3 v3.8.0/go.mod h1:8lJwR95VgcyWDhjKvUJMdOQXogrmhYSxkWh4ogSJfCg=
 github.com/rivo/uniseg v0.4.7 h1:WUdvkW8uEhrYfLC4ZzdpI2ztxP1I582+49Oc5Mq64VQ=
 github.com/rivo/uniseg v0.4.7/go.mod h1:FN3SvrM+Zdj16jyLfmOkMNblXMcoc8DfTHruCPUcx88=
+github.com/rogeriojunior31/Vults v0.1.6 h1:wqSfuNZzJa/tuW3bJfo+Z5bbzw+xaABYrJgcd3hI3xs=
+github.com/rogeriojunior31/Vults v0.1.6/go.mod h1:eHOIWQayYc6fgrlOzKr0U0Z0hFERaNmAZK2tCnBy0aA=
+github.com/rogeriojunior31/Vults v0.1.7-0.20261009124435-5e4da5b0772d h1:x7YK/NWAXEaOvt7XlrF8y+7fhBNDbaOUKhgay2C62Tk=
+github.com/rogeriojunior31/Vults v0.1.7-0.20261009124435-5e4da5b0772d/go.mod h1:eHOIWQayYc6fgrlOzKr0U0Z0hFERaNmAZK2tCnBy0aA=
 github.com/rogeriojunior31/lazyagents v0.4.3 h1:ec0NBR2++O3SDlX4AAiWDTsin8o8gekOIpe2MD9ZHPU=
 github.com/rogeriojunior31/lazyagents v0.4.3/go.mod h1:Y6ZZY7vvzYCRoie9uXpCBRbSp7A1R0XOSTXN4W4s4g0=
 github.com/rogeriojunior31/lazyagents v0.5.0 h1:TwD1dBZupOe3w2hhTWlW102nbE7D8wmuIckqL/LGPjM=

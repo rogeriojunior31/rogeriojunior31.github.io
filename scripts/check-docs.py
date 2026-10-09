@@ -177,7 +177,7 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     mock.write_text('#!/bin/sh\nif [ "$*" = "mod graph" ]; then\n  printf "%s\\n" "site github.com/rogeriojunior31/lazyagents@v0.4.3"\nelse\n  printf "%s\\n" "$*"\nfi\n')
     mock.chmod(0o755)
     updated = subprocess.check_output(["bash", "scripts/docs-latest.sh"], cwd=source, text=True, env=os.environ | {"PATH": str(mock_bin) + os.pathsep + os.environ["PATH"]})
-    assert "mod get github.com/rogeriojunior31/lazyagents@latest" in updated
+    assert "mod get github.com/rogeriojunior31/lazyagents@upgrade" in updated
     assert "example/external-test" not in updated
     print("OK: updater skips external documentation")
 

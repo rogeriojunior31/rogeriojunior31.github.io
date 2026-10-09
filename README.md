@@ -89,7 +89,7 @@ Translations: each one records `<!-- source: <mark> -->` under its title (invisi
 2. The project tags a release (`vX.Y.Z`). The same workflow sends a `docs-release` dispatch to this repo (secret `SITE_DISPATCH_TOKEN` in the project: a fine-grained token for this repository only, Contents read and write).
 3. `deploy.yml` runs; `scripts/docs-latest.sh` updates imported projects in `data/docs.yaml`, and the site is published after validation. External documentation entries are skipped. Without the token, the daily scheduled deploy picks the update up.
 
-Go's `@latest` resolution is used: stable semantic versions take precedence; repositories without release tags may resolve to a commit. The displayed version always comes from the resolved module.
+Go's `@upgrade` resolution is used: the latest release tag, except that a project pinned to a newer commit (a pseudo-version, e.g. a docs fix merged after the last tag) is never moved back to that tag; the next tag wins over it. Repositories without release tags may resolve to a commit. The displayed version always comes from the resolved module.
 
 Add an imported project: an `[[imports]]` block in `module.toml`, an entry in `data/docs.yaml`, and the caller workflow in the project (see the header of `.github/workflows/project-docs.yml`). `scripts/docs-latest.sh` discovers registered module imports automatically.
 
@@ -118,6 +118,16 @@ The home and project pages use `{{< lazyagents >}}` (`placement="home"` on the h
 ### SP Night showcase
 
 The SP Night project page and docs index use `{{< spnight >}}` / `layouts/partials/spnight-showcase.html`. Besides `docs/`, `config/_default/module.toml` mounts the project's `palette/sp_night.json`, `registry/ports.yml` and `registry/copy.yml` as `hugo.Data.spnight`, so the flavour swatches, flavour descriptions and port list come from the same module version as the docs. Nothing is copied by hand: a new port or a retuned colour appears with the next docs release.
+
+### Vults showcase
+
+The Vults project page and docs index use `{{< vults >}}` / `layouts/partials/vults-showcase.html`. The logo (`docs/assets/logo.png`, falling back to `zeca.png` before v0.1.7) and the island screenshot (`docs/assets/island-flock.png`) are read from the imported module, so a new screenshot in the project appears with its next release. The logo is pixel art: it is resized with `NearestNeighbor` and drawn with `image-rendering: pixelated`. Vults docs are English only until its 1.0 (no `requiredTranslations`). The repository name has an uppercase letter: the module path is `github.com/rogeriojunior31/Vults`.
+
+Preview Vults docs that are not pushed yet:
+
+```sh
+HUGO_MODULE_REPLACEMENTS="github.com/rogeriojunior31/Vults -> $HOME/Projects/Vults" hugo server
+```
 
 Docs logos are read from each imported project's `docs/assets/logo.png` (resized to WebP) or `docs/assets/logo.svg` by `layouts/partials/docs/logo.html`, used by the docs cards and sidebar.
 

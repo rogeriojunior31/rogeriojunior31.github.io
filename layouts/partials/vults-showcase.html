@@ -1,0 +1,33 @@
+{{- /* Showcase do Vults: projeto e entrada das docs. Logo e screenshot da ilha vêm do docs/assets/
+       do próprio repositório (mount em config/_default/module.toml), na versão das docs. */ -}}
+{{- $en := eq site.Language.Lang "en" -}}
+{{- $docs := site.GetPage "/docs/vults" -}}
+{{- $start := site.GetPage "/docs/vults/getting-started" | default $docs -}}
+{{- /* logo.png existe a partir da v0.1.7; até lá, o zeca.png. Pixel art: sem suavizar. */ -}}
+{{- $logo := or (resources.Get "docs/vults/assets/logo.png") (resources.Get "docs/vults/assets/zeca.png") -}}
+{{- $shot := resources.Get "docs/vults/assets/island-flock.png" -}}
+<section class="lazy-showcase lazy-showcase--{{ . }} vults-showcase not-prose" aria-label="{{ cond $en "Meet Vults" "Conheça o Vults" }}">
+  <div class="lazy-showcase-copy">
+    <div class="lazy-brand">
+      {{ with $logo }}{{ with .Resize "192x192 webp NearestNeighbor" }}<img class="vults-logo" src="{{ .RelPermalink }}" width="96" height="96" alt="{{ cond $en "Zeca, an 8-bit black vulture" "Zeca, um urubu-de-cabeça-preta em 8 bits" }}">{{ end }}{{ end }}
+      <div><span class="lazy-eyebrow">OPEN SOURCE / RUST / TAURI / LINUX</span><h2>Vults<span aria-hidden="true">_</span></h2></div>
+    </div>
+    <p class="lazy-headline">{{ cond $en "Your coding agents, alive on your desktop." "Seus agentes de código, vivos no desktop." }}</p>
+    <p class="lazy-description">{{ cond $en "Every agent session is an 8-bit vulture at the top of the screen, doing what its session does. Approve, answer and jump to the right terminal in one click. Zeca, the companion, chats through the CLIs you already use." "Cada sessão de agente é um urubu 8-bit no topo da tela, fazendo o que a sessão faz. Aprove, responda e pule para o terminal certo com um clique. O Zeca, o companheiro, conversa pelos CLIs que você já usa." }}</p>
+    <p class="lazy-agents">Claude Code · Codex · Gemini CLI · Antigravity</p>
+    <div class="lazy-actions">
+      <a class="lazy-action-primary" href="{{ if eq . "docs" }}{{ $start.RelPermalink }}{{ else }}{{ $docs.RelPermalink }}{{ end }}">{{ if eq . "docs" }}{{ cond $en "Get started" "Começar agora" }}{{ else }}{{ cond $en "Explore the docs" "Explorar as docs" }}{{ end }} <span aria-hidden="true">→</span></a>
+      <a href="https://github.com/rogeriojunior31/Vults/releases/latest">{{ cond $en "Download" "Baixar" }} <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/rogeriojunior31/Vults">GitHub <span aria-hidden="true">↗</span></a>
+      {{ if eq . "home" }}<a href="{{ (site.GetPage "/projects/vults").RelPermalink }}">{{ cond $en "About the project" "Sobre o projeto" }}</a>{{ end }}
+    </div>
+  </div>
+  {{ with $shot }}
+  <figure class="lazy-demo vults-shot">
+    <div class="lazy-demo-bar" aria-hidden="true"><span class="lazy-demo-dots"><i></i><i></i><i></i></span><span>{{ cond $en "the island" "a ilha" }}</span><span>KDE Plasma</span></div>
+    {{ $img := .Resize "1280x webp q90" }}
+    <img src="{{ $img.RelPermalink }}" width="{{ $img.Width }}" height="{{ $img.Height }}" loading="lazy" alt="{{ cond $en "The open island: Zeca with the session in front, and four vults in the flock list: one done, one failed, one with a question, one editing" "A ilha aberta: o Zeca com a sessão em destaque e quatro urubus na lista do bando: um concluído, um com falha, um com pergunta e um editando" }}">
+    <figcaption><span>{{ cond $en "Island → Card → Terminal" "Ilha → Card → Terminal" }}</span><span>{{ cond $en "Screenshot from the docs, at this release" "Screenshot das docs, nesta versão" }}</span></figcaption>
+  </figure>
+  {{ end }}
+</section>
