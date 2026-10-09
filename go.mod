@@ -20,7 +20,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/nunocoracao/blowfish/v3 v3.8.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
-	github.com/rogeriojunior31/Vults v0.1.6 // indirect
+	github.com/rogeriojunior31/Vults v0.1.7-0.20261009124435-5e4da5b0772d // indirect
 	github.com/rogeriojunior31/lazyagents v0.5.1 // indirect
 	github.com/sahilm/fuzzy v0.1.3 // indirect
 	github.com/sp-night/sp-night v1.4.0 // indirect

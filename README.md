@@ -89,7 +89,7 @@ Translations: each one records `<!-- source: <mark> -->` under its title (invisi
 2. The project tags a release (`vX.Y.Z`). The same workflow sends a `docs-release` dispatch to this repo (secret `SITE_DISPATCH_TOKEN` in the project: a fine-grained token for this repository only, Contents read and write).
 3. `deploy.yml` runs; `scripts/docs-latest.sh` updates imported projects in `data/docs.yaml`, and the site is published after validation. External documentation entries are skipped. Without the token, the daily scheduled deploy picks the update up.
 
-Go's `@latest` resolution is used: stable semantic versions take precedence; repositories without release tags may resolve to a commit. The displayed version always comes from the resolved module.
+Go's `@upgrade` resolution is used: the latest release tag, except that a project pinned to a newer commit (a pseudo-version, e.g. a docs fix merged after the last tag) is never moved back to that tag; the next tag wins over it. Repositories without release tags may resolve to a commit. The displayed version always comes from the resolved module.
 
 Add an imported project: an `[[imports]]` block in `module.toml`, an entry in `data/docs.yaml`, and the caller workflow in the project (see the header of `.github/workflows/project-docs.yml`). `scripts/docs-latest.sh` discovers registered module imports automatically.
 
