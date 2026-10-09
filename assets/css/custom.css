@@ -205,6 +205,19 @@ h1 { letter-spacing: -0.02em; }
 }
 @media print { .lazy-showcase { display: none; } }
 
+/* SP Night: reaproveita a estrutura do showcase acima; no lugar do vídeo, as três variações
+   pintadas com as próprias cores (vêm de hugo.Data.spnight, não deste arquivo). */
+.spn-palette { background: var(--sp-vao); }
+.spn-flavors { display: grid; gap: 1px; background: var(--sp-fiacao); }
+.spn-flavor { padding: 1rem 1.1rem 1.1rem; background: var(--bg); border-left: 3px solid var(--accent); }
+.spn-flavor .spn-flavor-name { margin: 0; font-family: var(--font-mono); font-size: .85rem; font-weight: 700; color: var(--fg); }
+.spn-flavor-name code { margin-right: .4rem; padding: .1rem .4rem; border-radius: .3rem; background: var(--panel); color: var(--accent); font-size: .75rem; }
+.spn-flavor .spn-flavor-idea { margin: .4rem 0 .8rem; color: var(--dim); font-size: .75rem; line-height: 1.5; }
+.spn-swatches { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: .3rem; margin: 0; padding: 0; list-style: none; }
+.spn-swatches li { aspect-ratio: 1; margin: 0; padding: 0; border-radius: .25rem; box-shadow: inset 0 0 0 1px var(--line); }
+.spn-swatches li::before { display: none; }
+@media (max-width: 639px) { .spn-swatches { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
+
 /* ---------- Docs (layouts/docs, partials/docs) ---------- */
 .docs-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr)); gap: 1rem; margin: 2rem 0 4rem; }
 .docs-card { display: flex; flex-direction: column; gap: .5rem; padding: 1.1rem 1.2rem; border: 1px solid var(--sp-fiacao); border-radius: .6rem; background: var(--sp-vao); text-decoration: none !important; transition: border-color .15s, transform .15s; }

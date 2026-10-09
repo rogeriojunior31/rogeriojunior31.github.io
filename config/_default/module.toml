@@ -16,6 +16,25 @@ source = "docs"
 target = "assets/docs/lazyagents"
 files = ["! **.go", "! dev/**"]
 
+# SP Night: além dos docs, a paleta oficial e o catálogo de ports viram dados do site
+# (hugo.Data.spnight: palette, ports, copy), usados pelo showcase na mesma versão dos docs.
+#   HUGO_MODULE_REPLACEMENTS="github.com/sp-night/sp-night -> $HOME/Projects/SP-Night/sp-night" hugo server
+[[imports]]
+path = "github.com/sp-night/sp-night"
+[[imports.mounts]]
+source = "docs"
+target = "assets/docs/sp-night"
+files = ["! **.go", "! dev/**"]
+[[imports.mounts]]
+source = "palette/sp_night.json"
+target = "data/spnight/palette.json"
+[[imports.mounts]]
+source = "registry/ports.yml"
+target = "data/spnight/ports.yml"
+[[imports.mounts]]
+source = "registry/copy.yml"
+target = "data/spnight/copy.yml"
+
 # Camada de docs do próprio site (traduções pt-BR e páginas que só existem aqui), em docs-site/<slug>/<idioma>/.
 # Declarar um mount do projeto desliga os padrões do componente "assets", por isso ele é repetido.
 [[mounts]]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check every lazyagents doc, locally or on the published website (stdlib only)."""
+"""Check every lazyagents and SP Night doc, locally or on the published website (stdlib only)."""
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.request import urlopen
@@ -49,8 +49,12 @@ def read(path):
 
 
 search = json.loads(read("/en/index.json"))
-pages = sorted({entry["permalink"] for entry in search if entry["permalink"].startswith("/en/docs/lazyagents/")})
-assert len(pages) >= 19, f"Expected all 19 public docs, found {len(pages)}"
+# Projetos com requiredTranslations: ["pt-br"] e o mínimo de páginas públicas de cada um.
+pages = []
+for project, minimum in (("lazyagents", 19), ("sp-night", 5)):
+    found = sorted({entry["permalink"] for entry in search if entry["permalink"].startswith(f"/en/docs/{project}/")})
+    assert len(found) >= minimum, f"Expected all {minimum} public {project} docs, found {len(found)}"
+    pages += found
 for english_path in pages:
     portuguese_path = english_path.removeprefix("/en")
     en = Document(read(english_path))
