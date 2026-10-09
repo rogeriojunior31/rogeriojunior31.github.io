@@ -17,7 +17,7 @@
       {{ end }}
       {{ with $href }}
         <a class="docs-card" href="{{ . }}">
-          {{ if eq $d.slug "lazyagents" }}{{ $logo := (resources.Get "img/lazyagents/logo.png").Resize "160x160 webp" }}<img class="docs-card-logo" src="{{ $logo.RelPermalink }}" width="72" height="72" alt="">{{ end }}
+          {{ partial "docs/logo.html" (dict "slug" $d.slug "size" 72 "class" "docs-card-logo") }}
           <span class="docs-card-name">~/docs/{{ $d.name }}</span>
           <span class="docs-card-summary">{{ index $d.summary $lang | default (index $d.summary "en") }}</span>
           <span class="docs-card-meta">{{ if $d.url }}{{ cond (eq $lang "en") "External documentation" "Documentação externa" }} · {{ if eq $d.urlLanguage "en" }}{{ cond (eq $lang "en") "English" "Inglês" }}{{ else if eq $d.urlLanguage "pt-br" }}{{ cond (eq $lang "en") "Portuguese" "Português" }}{{ else }}{{ cond (eq $lang "en") "Language not specified" "Idioma não informado" }}{{ end }} ↗{{ else }}{{ with $page.Params.docsVersion }}{{ . }} · {{ end }}{{ sub (len (where site.Pages "Params.docsProject" $d.slug)) 1 }} {{ cond (eq $lang "en") "pages" "páginas" }}{{ end }}</span>

@@ -1,0 +1,7 @@
+{{- /* Logo do projeto, lido do docs/assets/logo.{png,svg} do repositório importado. */ -}}
+{{- $size := .size -}}
+{{- with or (resources.Get (printf "docs/%s/assets/logo.png" .slug)) (resources.Get (printf "docs/%s/assets/logo.svg" .slug)) -}}
+  {{- $img := . -}}
+  {{- if ne .MediaType.SubType "svg" }}{{ $img = .Resize (printf "%dx%d webp" (mul $size 2) (mul $size 2)) }}{{ end -}}
+  <img class="{{ $.class }}" src="{{ $img.RelPermalink }}" width="{{ $size }}" height="{{ $size }}" alt="">
+{{- end -}}
