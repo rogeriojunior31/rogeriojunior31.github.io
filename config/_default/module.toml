@@ -35,6 +35,16 @@ target = "data/spnight/ports.yml"
 source = "registry/copy.yml"
 target = "data/spnight/copy.yml"
 
+# Vults: só os docs (o showcase lê o logo e as screenshots da ilha de docs/assets/).
+# O nome do repositório tem maiúscula; o Go guarda o módulo como "!vults" no cache, sem problema.
+#   HUGO_MODULE_REPLACEMENTS="github.com/rogeriojunior31/Vults -> $HOME/Projects/Vults" hugo server
+[[imports]]
+path = "github.com/rogeriojunior31/Vults"
+[[imports.mounts]]
+source = "docs"
+target = "assets/docs/vults"
+files = ["! dev/**"]
+
 # Camada de docs do próprio site (traduções pt-BR e páginas que só existem aqui), em docs-site/<slug>/<idioma>/.
 # Declarar um mount do projeto desliga os padrões do componente "assets", por isso ele é repetido.
 [[mounts]]

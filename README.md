@@ -119,6 +119,16 @@ The home and project pages use `{{< lazyagents >}}` (`placement="home"` on the h
 
 The SP Night project page and docs index use `{{< spnight >}}` / `layouts/partials/spnight-showcase.html`. Besides `docs/`, `config/_default/module.toml` mounts the project's `palette/sp_night.json`, `registry/ports.yml` and `registry/copy.yml` as `hugo.Data.spnight`, so the flavour swatches, flavour descriptions and port list come from the same module version as the docs. Nothing is copied by hand: a new port or a retuned colour appears with the next docs release.
 
+### Vults showcase
+
+The Vults project page and docs index use `{{< vults >}}` / `layouts/partials/vults-showcase.html`. The logo (`docs/assets/logo.png`, falling back to `zeca.png` before v0.1.7) and the island screenshot (`docs/assets/island-flock.png`) are read from the imported module, so a new screenshot in the project appears with its next release. The logo is pixel art: it is resized with `NearestNeighbor` and drawn with `image-rendering: pixelated`. Vults docs are English only until its 1.0 (no `requiredTranslations`). The repository name has an uppercase letter: the module path is `github.com/rogeriojunior31/Vults`.
+
+Preview Vults docs that are not pushed yet:
+
+```sh
+HUGO_MODULE_REPLACEMENTS="github.com/rogeriojunior31/Vults -> $HOME/Projects/Vults" hugo server
+```
+
 Docs logos are read from each imported project's `docs/assets/logo.png` (resized to WebP) or `docs/assets/logo.svg` by `layouts/partials/docs/logo.html`, used by the docs cards and sidebar.
 
 Preview SP Night docs that are not pushed yet:
