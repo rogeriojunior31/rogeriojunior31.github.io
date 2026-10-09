@@ -45,6 +45,11 @@ def build(source, output, succeeds=True, env=None):
     return result.stdout + result.stderr
 
 
+def replacements(local):
+    """Fake lazyagents module, keeping replacements already set (e.g. unreleased SP Night docs)."""
+    return ",".join(filter(None, (os.environ.get("HUGO_MODULE_REPLACEMENTS"), f"github.com/rogeriojunior31/lazyagents -> {local}")))
+
+
 def check_fragments(output):
     documents = {file: HTML(file.read_text()) for file in output.rglob("*.html")}
     for file, html in documents.items():
@@ -98,13 +103,14 @@ def check_site(output):
         assert f"/blob/{ref}/{source}" in project
         assert f"/blob/main/{source}" in project, "Editing must still use the working branch"
         assert (output / lang / "docs/lazyagents/guide/skills/index.html").exists()
+        sp_night = (output / lang / "docs/sp-night/index.html").read_text()
+        assert "spn-palette" in sp_night, "SP Night docs index shows the palette"
     check_fragments(output)
     check_reading_navigation(output)
     for lang in ("", "en/"):
         search = json.loads((output / lang / "index.json").read_text())
         assert all("/docs/traducoes/" not in entry["permalink"] for entry in search)
-        external = [entry for entry in search if entry.get("externalUrl") == "https://sp-night.github.io/ports/"]
-        assert len(external) == 1 and external[0]["type"] == "docs"
+        assert any(entry["permalink"] == f"/{lang}docs/sp-night/reference/cli/" for entry in search), "SP Night docs are imported"
         doc = next(entry for entry in search if entry["permalink"] == f"/{lang}docs/lazyagents/guide/skills/")
         assert doc["summary"], "Docs search results need context"
         assert any(entry["permalink"] == "/docs/lazyagents/visao-geral/" for entry in search), "Retain search fallback for pages without translations"
@@ -197,7 +203,7 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     (local / "docs/pt-br/guide").mkdir()
     (local / "docs/pt-br/guide/topic.md").write_text("# Tópico traduzido\n\n## Detalhes {#details}\n\nConteúdo em português.\n")
     preview = temp / "preview"
-    build(source, preview, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    build(source, preview, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)})
     page = (preview / "docs/lazyagents/index.html").read_text()
     assert "docs-version" not in page
     assert "/blob/main/docs/README.md" in page
@@ -228,21 +234,21 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     metadata = local / "docs/site.json"
     metadata.write_text(json.dumps({"schema": 1, "name": "Localized project", "summary": {"en": "Repository English summary", "pt-br": "Resumo vindo do projeto"}}))
     localized = temp / "localized"
-    build(source, localized, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    build(source, localized, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)})
     for lang, summary in (("", "Resumo vindo do projeto"), ("en/", "Repository English summary")):
         hub = (localized / lang / "docs/index.html").read_text()
         assert "Localized project" in hub and summary in hub
         page = (localized / lang / "docs/lazyagents/index.html").read_text()
         assert "Localized project" in page and summary in page
     metadata.write_text(json.dumps({"schema": 1, "name": "Invalid", "summary": {"en": "English only"}}))
-    assert "summary.pt-br" in build(source, temp / "invalid-metadata", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    assert "summary.pt-br" in build(source, temp / "invalid-metadata", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)})
     metadata.write_text(json.dumps({"schema": 2, "name": "Invalid", "summary": {"en": "English", "pt-br": "Portuguese"}}))
-    assert "schema 1" in build(source, temp / "invalid-schema", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"})
+    assert "schema 1" in build(source, temp / "invalid-schema", succeeds=False, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)})
     print("OK: versioned project metadata in both languages; missing summaries and unsupported schema fail the build")
 
     required = {"schema": 1, "name": "Strict translations", "summary": {"en": "English", "pt-br": "Portuguese"}, "requiredTranslations": ["pt-br"]}
     metadata.write_text(json.dumps(required))
-    preview_env = os.environ | {"HUGO_MODULE_REPLACEMENTS": f"github.com/rogeriojunior31/lazyagents -> {local}"}
+    preview_env = os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)}
     assert "tradução obrigatória" in build(source, temp / "missing-translation", succeeds=False, env=preview_env)
     for original in (local / "docs").rglob("*.md"):
         rel = original.relative_to(local / "docs")

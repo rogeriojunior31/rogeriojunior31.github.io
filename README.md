@@ -115,6 +115,18 @@ The home and project pages use `{{< lazyagents >}}` (`placement="home"` on the h
 
 `static/media/lazyagents/demo.mp4` is the project's hero demo (`docs/assets/demos/hero.mp4`, recorded by `scripts/record-demo.sh` with fictitious data): a silent 13-second clip that enables a skill in every agent, reads a session as a log and shows the usage limits. It is 1904×1026 (2x), H.264, 30 fps with fast start, without a window frame because the showcase draws its own. `poster.webp` is the frame at 2.8s (the skill enabled in all agents). When updating the recording, review the duration label and aria labels in the partial, the aspect ratio in `custom.css` and the duration check in `scripts/check-search-browser.py`. Native video controls and `preload="none"` keep playback optional and avoid downloading the video before the visitor plays it.
 
+### SP Night showcase
+
+The SP Night project page and docs index use `{{< spnight >}}` / `layouts/partials/spnight-showcase.html`. Besides `docs/`, `config/_default/module.toml` mounts the project's `palette/sp_night.json`, `registry/ports.yml` and `registry/copy.yml` as `hugo.Data.spnight`, so the flavour swatches, flavour descriptions and port list come from the same module version as the docs. Nothing is copied by hand: a new port or a retuned colour appears with the next docs release.
+
+Docs logos are read from each imported project's `docs/assets/logo.png` (resized to WebP) or `docs/assets/logo.svg` by `layouts/partials/docs/logo.html`, used by the docs cards and sidebar.
+
+Preview SP Night docs that are not pushed yet:
+
+```sh
+HUGO_MODULE_REPLACEMENTS="github.com/sp-night/sp-night -> $HOME/Projects/SP-Night/sp-night" hugo server
+```
+
 Update Blowfish: `hugo mod get -u && hugo mod tidy`.
 
 ## CI/CD
@@ -132,4 +144,4 @@ Local docs regression checks: `python scripts/check-docs.py` (Python standard li
 
 Optional browser checks against a running preview: `uv run --with playwright python scripts/check-search-browser.py http://localhost:1313` (install Chromium first with `uv run --with playwright playwright install chromium`). Covers both languages at four viewport widths, reading links, search input changes, a delayed search index and print visibility.
 
-Complete lazyagents language checks: `python3 scripts/check-docs-language.py public` or `python3 scripts/check-docs-language.py https://rogeriojunior31.github.io`. Checks every public English doc and its Portuguese counterpart, rejecting English fallback, stale translations, identical untranslated bodies and duplicate HTML anchors. CI checks the built artifact before publication.
+Complete lazyagents and SP Night language checks: `python3 scripts/check-docs-language.py public` or `python3 scripts/check-docs-language.py https://rogeriojunior31.github.io`. Checks every public English doc and its Portuguese counterpart, rejecting English fallback, stale translations, identical untranslated bodies and duplicate HTML anchors. CI checks the built artifact before publication.
