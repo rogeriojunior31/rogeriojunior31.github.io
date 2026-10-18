@@ -201,7 +201,7 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
         fixture.write("\n![Local asset](assets/sample.svg?color=orange#icon)\n\n[Top](README.md#local-preview)\n")
     (local / "docs/pt-br").mkdir()
     (local / "docs/pt-br/guide").mkdir()
-    (local / "docs/pt-br/guide/topic.md").write_text("# Tópico traduzido\n\n## Detalhes {#details}\n\nConteúdo em português.\n")
+    (local / "docs/pt-br/guide/topic.md").write_text("# Tópico traduzido\n\n## Detalhes {#details}\n\nConteúdo em português.\n\n<a id=\"skills\"></a>\n\n### skills\n\n<a id=\"other-details\"></a>\n\n### Mais detalhes\n")
     preview = temp / "preview"
     build(source, preview, env=os.environ | {"HUGO_MODULE_REPLACEMENTS": replacements(local)})
     page = (preview / "docs/lazyagents/index.html").read_text()
@@ -227,6 +227,9 @@ with TemporaryDirectory(prefix="site-docs-check-") as temp:
     translated = HTML((preview / "docs/lazyagents/guide/topic/index.html").read_text())
     assert any(tag == "h1" and attrs.get("lang") == "pt-BR" and attrs.get("id") == "guide-topic" for tag, attrs in translated.tags)
     assert any("article-content" in attrs.get("class", "").split() and attrs.get("lang") == "pt-BR" for _, attrs in translated.tags)
+    translated_ids = [attrs["id"] for _, attrs in translated.tags if attrs.get("id")]
+    assert len(translated_ids) == len(set(translated_ids)), "Explicit and automatic anchors duplicated"
+    assert all(translated_ids.count(anchor) == 1 for anchor in ("skills", "other-details", "mais-detalhes"))
     check_fragments(preview)
     check_reading_navigation(preview)
     print("OK: title anchors and explicit content language for originals and translations")
