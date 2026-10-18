@@ -15,4 +15,10 @@
 {{- $title := $fm.title | default "" }}
 {{- with findRESubmatch `(?m)^#[ \t]+(.+?)[ \t]*$` $raw 1 }}{{ if not $title }}{{ $title = index (index . 0) 1 }}{{ end }}{{ end }}
 {{- $body := replaceRE `(?m)^#[ \t]+.+\n?` "" $raw 1 }}
+{{- /* An explicit alias identical to the following heading's slug needs only one anchor. */ -}}
+{{- range findRESubmatch `(?m)<a id="([^"]+)"></a>\s*\n(#{2,6})[ \t]+([^\n]+)` $body }}
+  {{- if eq (index . 1) (anchorize (index . 3)) }}
+    {{- $body = replace $body (index . 0) (printf "%s %s" (index . 2) (index . 3)) }}
+  {{- end }}
+{{- end }}
 {{- return (dict "title" $title "body" $body "fm" $fm "source" $source) }}
